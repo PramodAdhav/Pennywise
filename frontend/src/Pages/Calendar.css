@@ -1,0 +1,19 @@
+.fc-daygrid-day {
+  background-color: rgb(133,131,123);
+  border-radius: 10px;
+}
+
+.fc-event {
+  background-color: rgb(133,131,123) !important;
+  border:#cfcdc0 !important;
+  color: white !important;
+  border-radius: 10px !important;
+  font-weight: bold;
+  width: 100px;
+  text-align:center;
+  height:35px;
+  font-size: large;
+
+
+}
+
