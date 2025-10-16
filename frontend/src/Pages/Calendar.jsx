@@ -4,7 +4,7 @@ import "./Calendar.css";
 
 export default function Calendar() {
   return (
-      <div className='mt-[-4rem] text-black '>
+      <div className='mt-[-4rem] text-black px-10'>
           <FullCalendar
         plugins={[ dayGridPlugin ]}
         initialView="dayGridMonth"

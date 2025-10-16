@@ -48,9 +48,9 @@ const dummyExpenses = [
 
 export default function History() {
   return (
-    <div className="bg-[#d1cfc0] min-h-screen text-black pt-0 px-10 text-left">
+    <div className="bg-[#d1cfc0] min-h-screen text-black pt-0 px-10 text-left -mt-8">
       <div className="px-8">
-        <blockquote className="instrument-serif-regular mt-1 border-l-2 pl-6 text-2xl text-black text-left">
+        <blockquote className="instrument-serif-regular mt-1 border-l-2 pl-4 text-2xl text-black text-left border-black">
           Below is a detailed history of your expenses. You can use the search option to quickly find 
           specific transactions, view spending patterns, or analyze your expenses by date, category, or amount.
         </blockquote>

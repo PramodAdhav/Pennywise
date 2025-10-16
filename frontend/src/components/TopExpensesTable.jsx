@@ -6,7 +6,7 @@ export default function TopExpensesTable({ expenses }) {
     .slice(0, 10);
 
   return (
-    <div className="w-full bg-[#d1cfc0] rounded-lg shadow-md p-4 mt-6">
+    <div className="w-full bg-[#d1cfc0] rounded-lg shadow-md p-4 mt-6 border border-black">
       <h2 className="text-xl font-bold mb-4">Top Expenses</h2>
       <table className="w-full text-left border-collapse">
         <thead>
