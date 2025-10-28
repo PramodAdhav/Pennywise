@@ -17,6 +17,11 @@ export default function CategoryPieChart({ data }) {
           "#FFCE56",
           "#4BC0C0",
           "#9966FF",
+          "#003f5c",
+          "#58508d",
+          "#bc5090",
+          "#ff6361",
+          "#ffa600",
         ],
         borderColor: "#fff",
         borderWidth: 1,
@@ -30,6 +35,7 @@ export default function CategoryPieChart({ data }) {
       legend: {
         position: "bottom",
         labels: { color: "#333" },
+        display: false,
       },
     },
   };

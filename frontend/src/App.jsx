@@ -7,10 +7,13 @@ import Calendar from "./Pages/Calendar";
 import SignupPage from "./Pages/SignupPage";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
+import { Toaster } from "sonner";
+// import DebtLend from "./Pages/DebtLend";
 
 function App() {
   return (
     <Router>
+      <Toaster position="top-center" richColors closeButton />
       <Routes>
         {/* Public route */}
         <Route path="/" element={<SignupPage />} />

@@ -1,12 +1,13 @@
 .fc-daygrid-day {
   background-color: rgb(133,131,123);
   border-radius: 10px;
+  cursor: pointer;
 }
 
 .fc-event {
   background-color: rgb(133,131,123) !important;
   border:#cfcdc0 !important;
-  color: white !important;
+  color: black !important;
   border-radius: 10px !important;
   font-weight: bold;
   width: 100px;
@@ -15,5 +16,22 @@
   font-size: large;
 
 
+}
+
+.fc-daygrid-event {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
 }
 

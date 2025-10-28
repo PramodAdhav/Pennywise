@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
@@ -25,11 +26,11 @@ export default function AuthForm() {
         localStorage.setItem("token", data.token);
         navigate("/home"); // redirect to Home page
       } else {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch (err) {
       console.error(err);
-      alert("Login failed");
+      toast.error("Login failed");
     }
   };
 
@@ -52,11 +53,11 @@ export default function AuthForm() {
         localStorage.setItem("token", data.token);
         navigate("/home");
       } else {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch (err) {
       console.error(err);
-      alert("Signup failed");
+      toast.error("Signup failed");
     }
   };
 

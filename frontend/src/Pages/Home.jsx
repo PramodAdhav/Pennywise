@@ -48,7 +48,7 @@ export default function Home() {
       {/* Cards animation */}
       <div className="flex justify-center gap-8 mt-16 flex-wrap max-w-6xl">
         <motion.div
-          className="bg-white text-black rounded-lg shadow-md p-6 text-center w-80 h-64 flex flex-col justify-center"
+          className="bg-[] text-black rounded-lg shadow-md border border-black p-6 text-center w-80 h-64 flex flex-col justify-center"
           initial="hidden"
           animate="visible"
           variants={leftCard}
@@ -60,7 +60,7 @@ export default function Home() {
         </motion.div>
 
         <motion.div
-          className="bg-white text-black rounded-lg shadow-md p-6 text-center w-80 h-64 flex flex-col justify-center"
+          className="bg-[] text-black rounded-lg border border-black shadow-md p-6 text-center w-80 h-64 flex flex-col justify-center"
           initial="hidden"
           animate="visible"
           variants={centerCard}
@@ -72,7 +72,7 @@ export default function Home() {
         </motion.div>
 
         <motion.div
-          className="bg-white text-black rounded-lg shadow-md p-6 text-center w-80 h-64 flex flex-col justify-center"
+          className="bg-[] border border-black text-black rounded-lg shadow-md p-6 text-center w-80 h-64 flex flex-col justify-center"
           initial="hidden"
           animate="visible"
           variants={rightCard}

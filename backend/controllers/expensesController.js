@@ -62,3 +62,27 @@ export const getExpenses = async (req, res) => {
     res.status(500).json({ message: "Failed to get expenses" });
   }
 };
+
+// DELETE /api/expenses/:id
+export const deleteExpense = async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.id;
+    const expenseId = parseInt(req.params.id);
+
+    // Ensure that the expense belongs to the user
+    const expense = await prisma.expense.findUnique({ where: { id: expenseId } });
+    if (!expense || expense.userId !== userId) {
+      return res.status(403).json({ message: "Unauthorized or not found" });
+    }
+
+    await prisma.expense.delete({ where: { id: expenseId } });
+    res.json({ message: "Expense deleted successfully" });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ message: "Failed to delete expense" });
+  }
+};

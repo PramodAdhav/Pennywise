@@ -1,138 +1,186 @@
+import { useEffect, useState } from "react";
 import LineChart from "../components/LineChart";
 import CategoryPieChart from "../components/CategoryPieChart";
 import TopExpensesTable from "../components/TopExpensesTable";
 import TotalExpensesCard from "../components/TotalExpensesCard";
 
 export default function Insights() {
-  const startDate = new Date("2025-10-01");
-  const labels = Array.from({ length: 60 }, (_, i) => {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + i);
-    return date.toISOString().split("T")[0];
+  const [expenses, setExpenses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
   });
 
-  const expensesData = [
-    { date: "2025-10-01", amount: 5000, category: "Food", note: "Lunch" },
-    { date: "2025-10-02", amount: 12000, category: "Travel", note: "Cab" },
-    { date: "2025-10-03", amount: 3000, category: "Shopping", note: "Clothes" },
-    { date: "2025-10-04", amount: 4000, category: "Bills", note: "Electricity" },
-    { date: "2025-10-05", amount: 1500, category: "Food", note: "Snacks" },
-    { date: "2025-10-06", amount: 7000, category: "Travel", note: "Train" },
-    { date: "2025-10-07", amount: 2000, category: "Other", note: "Gift" },
-    { date: "2025-10-08", amount: 3500, category: "Shopping", note: "Shoes" },
-    { date: "2025-10-09", amount: 500, category: "Food", note: "Breakfast" },
-    { date: "2025-10-10", amount: 6000, category: "Travel", note: "Taxi" },
-  ];
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return alert("You must be logged in to view insights.");
 
-  const totalExpenses = expensesData.reduce((sum, e) => sum + e.amount, 0);
-  const totalEntries = expensesData.length;
+        const res = await fetch("http://localhost:5000/api/expenses", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) setExpenses(data);
+        else alert(`Failed to load insights: ${data.message || data.error}`);
+      } catch (err) {
+        console.error(err);
+        alert("Error fetching insights");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchExpenses();
+  }, []);
+
+  if (loading)
+    return (
+      <div className="min-h-screen bg-[#d1cfc0] flex justify-center items-center text-gray-500 text-lg">
+        Loading insights...
+      </div>
+    );
+
+  if (expenses.length === 0)
+    return (
+      <div className="min-h-screen bg-[#d1cfc0] flex flex-col justify-center items-center text-gray-800 px-6">
+        <div className=" shadow-md border border-black -mt-100 rounded-2xl p-10 text-center max-w-md">
+          <h2 className="text-2xl font-semibold mb-2">No Expenses Found</h2>
+          <p className="text-gray-500">
+            Start tracking expenses to view insights, trends, and breakdowns.
+          </p>
+          <button
+            onClick={() => (window.location.href = "/track")}
+            className="mt-6 px-6 py-2 bg-black text-white rounded-full font-medium hover:bg-neutral-800 transition"
+          >
+            Add Your First Expense
+          </button>
+        </div>
+      </div>
+    );
+
+  // ----- Calculations -----
+  const [year, month] = selectedMonth.split("-");
+  const monthlyExpenses = expenses.filter((e) => {
+    const d = new Date(e.date);
+    return d.getFullYear() === +year && d.getMonth() + 1 === +month;
+  });
+
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const monthlyTotal = monthlyExpenses.reduce((s, e) => s + e.amount, 0);
+  const monthlyEntries = monthlyExpenses.length;
+  const avgPerDay = Math.floor(monthlyTotal / daysInMonth || 0);
+  const highestExpense = monthlyExpenses.reduce(
+    (max, e) => (e.amount > max.amount ? e : max),
+    { amount: 0, category: "" }
+  );
+
+  const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
+  const totalEntries = expenses.length;
   const avgSpending = Math.floor(totalExpenses / totalEntries);
 
   const freqCategoryMap = {};
-  expensesData.forEach((e) => {
+  expenses.forEach((e) => {
     freqCategoryMap[e.category] = (freqCategoryMap[e.category] || 0) + 1;
   });
   const mostFreqCategory = Object.entries(freqCategoryMap).sort((a, b) => b[1] - a[1])[0][0];
+
+  const labels = Array.from({ length: daysInMonth }, (_, i) => {
+    const day = String(i + 1).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  });
 
   const chartData = {
     labels,
     datasets: [
       {
         label: "Daily Spending (₹)",
-        data: Array.from({ length: 60 }, () => Math.floor(Math.random() * 2000)),
-        borderColor: "#1f1f1f",
-        backgroundColor: "rgba(31, 31, 31, 0.3)",
-        tension: 0.3,
+        data: labels.map((d) =>
+          monthlyExpenses
+            .filter((e) => new Date(e.date).toISOString().split("T")[0] === d)
+            .reduce((sum, e) => sum + e.amount, 0)
+        ),
+        borderColor: "#000",
+        backgroundColor: "rgba(0,0,0,0.05)",
+        tension: 0.4,
       },
     ],
   };
 
-  const categoryData = {
-    Food: 12000,
-    Travel: 8000,
-    Shopping: 5000,
-    Bills: 3000,
-    Other: 2000,
-  };
+  const categoryData = {};
+  monthlyExpenses.forEach((e) => {
+    categoryData[e.category] = (categoryData[e.category] || 0) + e.amount;
+  });
 
+  // ----- UI -----
   return (
-    <div className="min-h-screen bg-[#d1cfc0] text-black p-8 space-y-6">
-      <div className="px-8">
-        <blockquote className="instrument-serif-regular -mt-14 border-l-2 mb-8 border-black pl-4 text-2xl text-left">
-          The amount entered is considered in rupees by default. If no date is selected, today’s date will be 
-          used automatically. Please choose an appropriate category from the dropdown menu before submitting your 
-          expense.
-        </blockquote>
-      </div>
+    <div className="min-h-screen bg-[] text-neutral-900 p-8 space-y-10 font-[system-ui] -mt-18">
 
-      {/* Summary + Monthly Insights side by side */}
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left side: 4 summary cards in 2x2 grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-          <TotalExpensesCard total={totalExpenses} />
-          <div className="h-[120px] bg-[#d1cfc0] rounded-lg border border-black flex flex-col items-center justify-center transition-transform transform hover:scale-105">
-            <p className="text-gray-500 text-sm">Total Entries</p>
-            <h2 className="text-2xl font-bold">{totalEntries}</h2>
-          </div>
-          <div className="h-[120px] bg-[#d1cfc0] border border-black rounded-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
-            <p className="text-gray-500 text-sm">Average Spending / Day</p>
-            <h2 className="text-2xl font-bold">₹{avgSpending}</h2>
-          </div>
-          <div className="h-[120px] bg-[#d1cfc0] border border-black rounded-lg flex flex-col items-center justify-center transition-transform transform hover:scale-105">
-            <p className="text-gray-500 text-sm">Most Frequent Category</p>
-            <h2 className="text-2xl font-bold">{mostFreqCategory}</h2>
-          </div>
+      {/* Summary */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <SummaryCard label="Total Spent" value={`₹${totalExpenses}`} />
+        <SummaryCard label="Entries" value={totalEntries} />
+        <SummaryCard label="Avg per Entry" value={`₹${avgSpending}`} />
+        <SummaryCard label="Top Category" value={mostFreqCategory} />
+      </section>
+
+      {/* Monthly Section */}
+      <section className="bg-[] rounded-3xl shadow-sm p-8 border border-black space-y-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <h2 className="text-2xl font-medium">Monthly Overview</h2>
+          <input
+            type="month"
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="text-black border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black transition"
+          />
         </div>
 
-        {/* Right side: Monthly Insights */}
-        <div className="flex-1 bg-[#d1cfc0] border border-black rounded-lg p-6 shadow-sm">
-          <h2 className="text-2xl font-bold mb-4 text-center">Monthly Insights</h2>
+        {/* Line Chart - Full Width */}
+        <div className="h-[320px] w-full">
+          <LineChart data={chartData} />
+        </div>
 
-          {/* Month and Year Picker */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6">
-            <input
-              type="month"
-              className="bg-[#d1cfc0] text-black px-4 py-2 rounded-md outline-none border border-black"
+        {/* Pie + Summary Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          {/* Pie Chart (or message) */}
+          <div className="h-[320px] flex items-center justify-center">
+            {Object.keys(categoryData).length > 0 ? (
+              <CategoryPieChart data={categoryData} showLegend={false} />
+            ) : (
+              <p className="text-neutral-500 italic">
+                Add expenses to see pie chart
+              </p>
+            )}
+          </div>
+
+          {/* Small Summary Cards (2x2 grid) */}
+          <div className="grid grid-cols-2 gap-6">
+            <SummaryCard label="Monthly Total" value={`₹${monthlyTotal}`} />
+            <SummaryCard label="Entries" value={monthlyEntries} />
+            <SummaryCard label="Avg per Day" value={`₹${avgPerDay}`} />
+            <SummaryCard
+              label="Highest Expense"
+              value={`₹${highestExpense.amount}`}
+              sub={highestExpense.category}
             />
-            <button
-              className="bg-[#1f1f1f] text-white px-6 py-2 rounded-md hover:bg-black transition-all"
-            >
-              Generate Insights
-            </button>
-          </div>
-
-          {/* Temporary Results */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-            <div className="bg-[#d1cfc0] border border-black rounded-lg p-4 hover:scale-105 transition-transform">
-              <p className="text-gray-600 text-sm">Total Expenses</p>
-              <h3 className="text-xl font-bold">₹23,500</h3>
-            </div>
-            <div className="bg-[#d1cfc0] border border-black rounded-lg p-4 hover:scale-105 transition-transform">
-              <p className="text-gray-600 text-sm">Most Frequent Category</p>
-              <h3 className="text-xl font-bold">Food</h3>
-            </div>
-            <div className="bg-[#d1cfc0] border border-black rounded-lg p-4 hover:scale-105 transition-transform">
-              <p className="text-gray-600 text-sm">Average per Day</p>
-              <h3 className="text-xl font-bold">₹1,175</h3>
-            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Line Chart (no shadow) */}
-      <div className="w-full h-[470px] bg-[#d1cfc0] rounded-lg p-2">
-        <LineChart data={chartData} />
-      </div>
+      {/* Table */}
+      <TopExpensesTable expenses={monthlyExpenses} />
+    </div>
+  );
+}
 
-      {/* Pie Chart + Table (same height) */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1 h-[500px] bg-[#d1cfc0] rounded-lg p-4 ml-10 mt-8">
-          <CategoryPieChart data={categoryData} />
-        </div>
-        <div className="flex-1 h-[400px] bg-[#d1cfc0] rounded-lg p-4 mr-13 mb-5">
-          <TopExpensesTable expenses={expensesData} />
-        </div>
-      </div>
+// ---- Summary Card Component ----
+function SummaryCard({ label, value, sub }) {
+  return (
+    <div className="bg-[] shadow-sm border border-black rounded-3xl py-6 flex flex-col justify-center items-center hover:shadow-md transition-all duration-200">
+      <p className="text-neutral-500 text-sm">{label}</p>
+      <h2 className="text-3xl font-semibold mt-1">{value}</h2>
+      {sub && <p className="text-neutral-400 text-sm mt-1">{sub}</p>}
     </div>
   );
 }
