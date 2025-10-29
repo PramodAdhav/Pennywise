@@ -11,8 +11,10 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+
+
 // CORS
-app.use(cors({origin: "http://localhost:5173"}));
+app.use(cors({origin: "*"}));
 // Middleware
 
 app.use(express.json());
@@ -23,8 +25,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expensesRoutes);
 app.use("/api/debtlend", debtLendRoutes);
 
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
 // Start
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+export default app;
