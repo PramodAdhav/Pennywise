@@ -18,7 +18,7 @@ export default function Calendar() {
           return;
         }
 
-        const res = await fetch("http://pennywise-tan.vercel.app/api/expenses", {
+        const res = await fetch("https://pennywise-tan.vercel.app/api/expenses", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

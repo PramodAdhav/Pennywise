@@ -29,7 +29,7 @@ export default function AuthForm() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://pennywise-tan.vercel.app/api/auth/login", {
+      const res = await fetch("https://pennywise-tan.vercel.app/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ gmail: loginEmail, password: loginPassword }),
@@ -59,7 +59,7 @@ export default function AuthForm() {
     }
 
     try {
-      const res = await fetch("http://pennywise-tan.vercel.app/api/auth/signup", {
+      const res = await fetch("https://pennywise-tan.vercel.app/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

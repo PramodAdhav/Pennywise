@@ -34,7 +34,7 @@ export default function ExpenseTable({ expenses, onDelete }) {
     if (!token) return alert("Unauthorized");
 
     try {
-      const res = await fetch(`http://pennywise-tan.vercel.app/api/expenses/${id}`, {
+      const res = await fetch(`https://pennywise-tan.vercel.app/api/expenses/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
