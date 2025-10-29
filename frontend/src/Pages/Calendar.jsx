@@ -18,7 +18,7 @@ export default function Calendar() {
           return;
         }
 
-        const res = await fetch("http://localhost:5000/api/expenses", {
+        const res = await fetch("http://pennywise-gray-iota.vercel.app/api/expenses", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

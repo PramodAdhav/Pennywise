@@ -17,7 +17,7 @@ export default function Insights() {
         const token = localStorage.getItem("token");
         if (!token) return alert("You must be logged in to view insights.");
 
-        const res = await fetch("http://localhost:5000/api/expenses", {
+        const res = await fetch("http://pennywise-gray-iota.vercel.app/api/expenses", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
