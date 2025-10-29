@@ -36,22 +36,22 @@ export default function Insights() {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-[#d1cfc0] flex justify-center items-center text-gray-500 text-lg">
+      <div className="min-h-screen bg-[#d1cfc0] flex justify-center items-center text-gray-600 text-lg">
         Loading insights...
       </div>
     );
 
   if (expenses.length === 0)
     return (
-      <div className="min-h-screen bg-[#d1cfc0] flex flex-col justify-center items-center text-gray-800 px-6">
-        <div className=" shadow-md border border-black -mt-100 rounded-2xl p-10 text-center max-w-md">
-          <h2 className="text-2xl font-semibold mb-2">No Expenses Found</h2>
-          <p className="text-gray-500">
+      <div className="min-h-screen bg-[#d1cfc0] flex flex-col justify-center items-center text-gray-800 px-6 text-center">
+        <div className="shadow-md border border-black rounded-2xl p-8 sm:p-10 max-w-md">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-2">No Expenses Found</h2>
+          <p className="text-gray-600 text-sm sm:text-base">
             Start tracking expenses to view insights, trends, and breakdowns.
           </p>
           <button
             onClick={() => (window.location.href = "/track")}
-            className="mt-6 px-6 py-2 bg-black text-white rounded-full font-medium hover:bg-neutral-800 transition"
+            className="mt-6 px-6 py-2 bg-black text-white rounded-full font-medium hover:cursor-pointer transition"
           >
             Add Your First Expense
           </button>
@@ -114,10 +114,9 @@ export default function Insights() {
 
   // ----- UI -----
   return (
-    <div className="min-h-screen bg-[] text-neutral-900 p-8 space-y-10 font-[system-ui] -mt-18">
-
+    <div className="min-h-screen bg-[#d1cfc0] text-neutral-900 p-4 sm:p-8 space-y-10 font-[system-ui] -mt-8">
       {/* Summary */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <SummaryCard label="Total Spent" value={`₹${totalExpenses}`} />
         <SummaryCard label="Entries" value={totalEntries} />
         <SummaryCard label="Avg per Entry" value={`₹${avgSpending}`} />
@@ -125,37 +124,37 @@ export default function Insights() {
       </section>
 
       {/* Monthly Section */}
-      <section className="bg-[] rounded-3xl shadow-sm p-8 border border-black space-y-8">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <h2 className="text-2xl font-medium">Monthly Overview</h2>
+      <section className="rounded-3xl shadow-sm p-4 sm:p-8 border border-black space-y-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
+          <h2 className="text-xl sm:text-2xl font-medium">Monthly Overview</h2>
           <input
             type="month"
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="text-black border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black transition"
+            className="text-black border border-black rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black transition text-sm sm:text-base"
           />
         </div>
 
-        {/* Line Chart - Full Width */}
-        <div className="h-[320px] w-full">
+        {/* Line Chart */}
+        <div className="h-[250px] sm:h-[320px] w-full">
           <LineChart data={chartData} />
         </div>
 
-        {/* Pie + Summary Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-          {/* Pie Chart (or message) */}
-          <div className="h-[320px] flex items-center justify-center">
+        {/* Pie + Summary Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          {/* Pie Chart */}
+          <div className="h-[260px] sm:h-[320px] flex items-center justify-center">
             {Object.keys(categoryData).length > 0 ? (
               <CategoryPieChart data={categoryData} showLegend={false} />
             ) : (
-              <p className="text-neutral-500 italic">
+              <p className="text-neutral-500 italic text-sm sm:text-base">
                 Add expenses to see pie chart
               </p>
             )}
           </div>
 
-          {/* Small Summary Cards (2x2 grid) */}
-          <div className="grid grid-cols-2 gap-6">
+          {/* Small Summary Cards */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-6">
             <SummaryCard label="Monthly Total" value={`₹${monthlyTotal}`} />
             <SummaryCard label="Entries" value={monthlyEntries} />
             <SummaryCard label="Avg per Day" value={`₹${avgPerDay}`} />
@@ -169,7 +168,7 @@ export default function Insights() {
       </section>
 
       {/* Table */}
-      <TopExpensesTable expenses={monthlyExpenses} />
+      <TopExpensesTable expenses={expenses} />
     </div>
   );
 }
@@ -177,10 +176,10 @@ export default function Insights() {
 // ---- Summary Card Component ----
 function SummaryCard({ label, value, sub }) {
   return (
-    <div className="bg-[] shadow-sm border border-black rounded-3xl py-6 flex flex-col justify-center items-center hover:shadow-md transition-all duration-200">
-      <p className="text-neutral-500 text-sm">{label}</p>
-      <h2 className="text-3xl font-semibold mt-1">{value}</h2>
-      {sub && <p className="text-neutral-400 text-sm mt-1">{sub}</p>}
+    <div className="shadow-sm border border-black rounded-2xl py-4 sm:py-6 px-2 sm:px-4 flex flex-col justify-center items-center hover:shadow-md transition-all duration-200 bg-[#dcdacb]">
+      <p className="text-neutral-600 text-xs sm:text-sm">{label}</p>
+      <h2 className="text-2xl sm:text-3xl font-semibold mt-1">{value}</h2>
+      {sub && <p className="text-neutral-500 text-xs sm:text-sm mt-1">{sub}</p>}
     </div>
   );
 }

@@ -8,7 +8,7 @@ import SignupPage from "./Pages/SignupPage";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 import { Toaster } from "sonner";
-// import DebtLend from "./Pages/DebtLend";
+import DebtLend from "./Pages/DebtLend";
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
   );
 }
 
-// Layout wrapper that includes Navbar and renders nested protected pages
+// ✅ Layout wrapper that includes Navbar and nested protected pages
 function LayoutWithNavbar() {
   return (
     <>
@@ -44,6 +44,7 @@ function LayoutWithNavbar() {
           <Route path="history" element={<History />} />
           <Route path="insights" element={<Insights />} />
           <Route path="calendar" element={<Calendar />} />
+          <Route path="debt-lend" element={<DebtLend />} /> {/* ✅ Added route */}
           {/* Redirect any unknown protected route to /home */}
           <Route path="*" element={<Navigate to="home" />} />
         </Routes>

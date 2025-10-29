@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
 import cors from "cors";
 import expensesRoutes from "./routes/expenses.js";
+import debtLendRoutes from "./routes/debtlendRoutes.js";
 
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/expenses", expensesRoutes);
+app.use("/api/debtlend", debtLendRoutes);
 
 // Start
 

@@ -15,16 +15,17 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  gmail    String    @unique
-  username String
-  password String
-  expenses Expense[]
+  id         Int         @id @default(autoincrement())
+  gmail      String      @unique
+  username   String
+  password   String
+  expenses   Expense[]
+  debtLends  DebtLend[]  // ✅ Relation to new model
 }
 
 model Expense {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id])
   userId    Int
   date      DateTime
   amount    Float
@@ -32,4 +33,18 @@ model Expense {
   note      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model DebtLend {
+  id              Int       @id @default(autoincrement())
+  user            User      @relation(fields: [userId], references: [id])
+  userId          Int
+  personOfInterest String
+  date            DateTime
+  amount          Float
+  note            String?
+  type            String    // "Debt" or "Lend"
+  status          String    @default("uncleared") // "cleared" or "uncleared"
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }

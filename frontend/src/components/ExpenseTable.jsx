@@ -67,7 +67,7 @@ export default function ExpenseTable({ expenses, onDelete }) {
       </div>
 
       {/* Expense Table */}
-      <table className="min-w-full bg-[#d1cfc0] text-black rounded-lg shadow-lg overflow-hidden">
+      <table className="min-w-full bg-[#d1cfc0] text-black rounded-lg shadow-lg border border-black overflow-hidden">
         <thead className="bg-[#bcb9ac] text-left">
           <tr>
             <th className="py-3 px-3">Date</th>

@@ -28,7 +28,7 @@ export const addExpense = async (req, res) => {
     const expense = await prisma.expense.create({
       data: {
         userId,
-        date: new Date(date), // ensure Date object
+        date: new Date(date),
         amount: parseFloat(amount),
         category,
         note,
@@ -38,17 +38,26 @@ export const addExpense = async (req, res) => {
     res.json(expense);
   } catch (err) {
     console.error("Expense creation failed:", err);
-    res.status(500).json({ message: err.message, stack: err.stack });
+    res.status(500).json({ message: err.message });
   }
 };
 
 // GET /api/expenses
 export const getExpenses = async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "Unauthorized" });
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ message: "Unauthorized: no token" });
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const token = authHeader.split(" ")[1];
+    let decoded;
+
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      console.error("JWT verification error:", err.message);
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
     const userId = decoded.id;
 
     const expenses = await prisma.expense.findMany({
@@ -56,10 +65,11 @@ export const getExpenses = async (req, res) => {
       orderBy: { date: "desc" },
     });
 
-    res.json(expenses);
+    // Always respond successfully, even if there are no expenses
+    return res.status(200).json(expenses);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to get expenses" });
+    console.error("Error fetching expenses:", err.message);
+    return res.status(500).json({ message: "Server error while fetching expenses" });
   }
 };
 
@@ -73,7 +83,6 @@ export const deleteExpense = async (req, res) => {
     const userId = decoded.id;
     const expenseId = parseInt(req.params.id);
 
-    // Ensure that the expense belongs to the user
     const expense = await prisma.expense.findUnique({ where: { id: expenseId } });
     if (!expense || expense.userId !== userId) {
       return res.status(403).json({ message: "Unauthorized or not found" });

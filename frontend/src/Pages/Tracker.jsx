@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "../components/ui/TrackButton";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
 
 export default function Track() {
   const [date, setDate] = useState("");
@@ -11,7 +10,7 @@ export default function Track() {
   const [expenses, setExpenses] = useState([]);
 
   const token = localStorage.getItem("token");
-  if (!token) toast.error("You must be logged in to view expenses.")
+  if (!token) toast.error("You must be logged in to view expenses.");
 
   const fetchExpenses = async () => {
     try {
@@ -41,6 +40,12 @@ export default function Track() {
       return;
     }
 
+    const numAmount = Number(amount);
+    if (isNaN(numAmount) || numAmount <= 0) {
+      toast.error("Please enter a valid positive number for amount");
+      return;
+    }
+
     try {
       const res = await fetch("http://localhost:5000/api/expenses", {
         method: "POST",
@@ -50,7 +55,7 @@ export default function Track() {
         },
         body: JSON.stringify({
           date,
-          amount: parseFloat(amount),
+          amount: numAmount,
           category,
           note,
         }),
@@ -72,89 +77,91 @@ export default function Track() {
     }
   };
 
+  const handleAmountChange = (e) => {
+    const val = e.target.value;
+    if (/^\d*\.?\d*$/.test(val)) {
+      setAmount(val);
+    }
+  };
+
   return (
-    <div className="bg-[#d1cfc0] min-h-screen text-black flex flex-col items-center py-6">
-      <div className="px-1 w-[80%]">
-        <blockquote className="instrument-serif-regular -mt-10 mb-7 border-l-2 pl-4 text-2xl text-black text-left border-black">
-          Below is a detailed history of your expenses. You can use the search
-          option to quickly find specific transactions, view spending patterns,
-          or analyze your expenses by date, category, or amount.
-        </blockquote>
-      </div>
+    <div className="bg-[#d1cfc0] min-h-screen text-black flex flex-col -mt-8 sm:-mt-10 items-center py-6 px-3 sm:px-6">
       {/* Add Expense Card */}
-      <div className="bg-[#1f1f1f] text-white p-8 shadow-lg w-[80%] mb-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="bg-[#1f1f1f] text-white p-5 sm:p-8 shadow-lg w-full sm:w-[80%] mb-4 rounded">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="bg-[#2b2b2b] text-white px-3 py-3 w-full outline-none"
+            className="bg-[#2b2b2b] text-white px-3 py-2 sm:py-3 w-full rounded outline-none text-sm sm:text-base"
           />
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             placeholder="Amount"
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="bg-[#2b2b2b] text-white px-3 py-3 w-full outline-none"
+            onChange={handleAmountChange}
+            className="bg-[#2b2b2b] text-white px-3 py-2 sm:py-3 w-full rounded outline-none text-sm sm:text-base"
           />
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="bg-[#2b2b2b] text-white px-3 py-3 w-full outline-none"
+            className="bg-[#2b2b2b] text-white px-3 py-2 sm:py-3 w-full rounded outline-none text-sm sm:text-base"
           >
             <option value="">Category</option>
-            <optgroup label="Essentials">
-              <option>Rent</option>
-              <option>Utilities</option>
-              <option>Groceries</option>
-              <option>Transportation</option>
-            </optgroup>
-            <optgroup label="Leisure">
-              <option>Restaurant</option>
-              <option>Entertainment</option>
-              <option>Subscriptions</option>
-            </optgroup>
-            <optgroup label="Personal">
-              <option>Health</option>
-              <option>Gym</option>
-              <option>Education</option>
-              <option>Miscellaneous</option>
-            </optgroup>
+            <option>Groceries</option>
+            <option>Food</option>
+            <option>Rent</option>
+            <option>Transportation</option>
+            <option>Utilities</option>
+            <option>Entertainment</option>
+            <option>Health</option>
+            <option>Education</option>
+            <option>Shopping</option>
+            <option>Subscriptions</option>
+            <option>Miscellaneous</option>
           </select>
           <input
             type="text"
             placeholder="Note (optional)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className="bg-[#2b2b2b] text-white px-3 py-3 w-full outline-none"
+            className="bg-[#2b2b2b] text-white px-3 py-2 sm:py-3 w-full rounded outline-none text-sm sm:text-base"
           />
         </div>
       </div>
 
-      {/* Add Expense Button - closer to card */}
-      <div className="mb-10">
+      {/* Add Expense Button */}
+      <div className="mb-8 sm:mb-10">
         <Button
           onClick={handleSubmit}
-          className="w-48 text-black font-bold text-xl transition-all cursor-default hover:cursor-pointer"
+          className="w-40 sm:w-48 text-black text-lg sm:text-xl transition-all cursor-default hover:cursor-pointer"
         >
           Add Expense
         </Button>
       </div>
 
-      {/* Recent Expenses Section */}
-      
-
-      <div className="bg-[#d1cfc0] p-6 w-[80%] mt-6">
-        <h2 className="text-3xl font-semibold mb-6 text-left">Recent Expenses</h2>
-
+      {/* Recent Expenses */}
+      <div className="bg-[#d1cfc0] p-4 sm:p-6 w-full sm:w-[80%] mt-4 sm:mt-6 overflow-x-auto">
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-left">
+          Recent Expenses
+        </h2>
         <div className="overflow-x-auto">
-          <table className="w-full border border-black border-collapse">
+          <table className="w-full border border-black border-collapse text-sm sm:text-base">
             <thead>
-              <tr className="bg-[#1f1f1f] text-white text-left border border-black">
-                <th className="px-4 py-3 border border-black">Date</th>
-                <th className="px-4 py-3 border border-black">Amount (₹)</th>
-                <th className="px-4 py-3 border border-black">Category</th>
-                <th className="px-4 py-3 border border-black">Note</th>
+              <tr className="bg-[#1F1F1F] text-white text-left border border-black">
+                <th className="px-3 sm:px-4 py-2 sm:py-3 border border-black">
+                  Date
+                </th>
+                <th className="px-3 sm:px-4 py-2 sm:py-3 border border-black">
+                  Amount
+                </th>
+                <th className="px-3 sm:px-4 py-2 sm:py-3 border border-black">
+                  Category
+                </th>
+                <th className="px-3 sm:px-4 py-2 sm:py-3 border border-black">
+                  Note
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -163,17 +170,26 @@ export default function Track() {
                   key={exp.id}
                   className="border border-black hover:bg-gray-200 transition-all"
                 >
-                  <td className="px-4 py-2 border border-black">
+                  <td className="px-3 sm:px-4 py-2 border border-black">
                     {new Date(exp.date).toLocaleDateString("en-GB")}
                   </td>
-                  <td className="px-4 py-2 border border-black">₹{exp.amount}</td>
-                  <td className="px-4 py-2 border border-black">{exp.category}</td>
-                  <td className="px-4 py-2 border border-black">{exp.note || "-"}</td>
+                  <td className="px-3 sm:px-4 py-2 border border-black">
+                    ₹{exp.amount}
+                  </td>
+                  <td className="px-3 sm:px-4 py-2 border border-black">
+                    {exp.category}
+                  </td>
+                  <td className="px-3 sm:px-4 py-2 border border-black">
+                    {exp.note || "-"}
+                  </td>
                 </tr>
               ))}
               {expenses.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="text-center py-4 border border-black">
+                  <td
+                    colSpan="4"
+                    className="text-center py-3 sm:py-4 border border-black"
+                  >
                     No expenses yet.
                   </td>
                 </tr>
