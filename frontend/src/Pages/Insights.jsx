@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import LineChart from "../components/LineChart";
 import CategoryPieChart from "../components/CategoryPieChart";
 import TopExpensesTable from "../components/TopExpensesTable";
-import TotalExpensesCard from "../components/TotalExpensesCard";
 
 export default function Insights() {
   const [expenses, setExpenses] = useState([]);

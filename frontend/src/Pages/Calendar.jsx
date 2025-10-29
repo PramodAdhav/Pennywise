@@ -108,56 +108,122 @@ export default function Calendar() {
       {/* Custom CSS for toolbar styling */}
       <style>
         {`
-          .fc .fc-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-          }
+          /* === Calendar Day Styling === */
+.fc-daygrid-day {
+  background-color: rgb(133, 131, 123);
+  border-radius: 10px;
+  cursor: pointer;
+}
 
-          /* Move title to right side cleanly */
-          .fc .fc-toolbar-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-align: right;
-            flex-grow: 1;
-          }
+/* === Expense Event Box Styling === */
+.fc-event {
+  background-color: rgb(133, 131, 123) !important;
+  color: black !important;
+  border: 1px solid #cfcdc0 !important;
+  border-radius: 10px !important;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  max-width: 100px;
+  height: 35px;
+  font-size: 0.85rem !important;
+  line-height: 1.2 !important;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 2px 4px !important;
+}
 
-          /* Button styling */
-          .fc .fc-button {
-            background: black !important;
-            border: none !important;
-            color: white !important;
-            padding: 0.25rem 0.6rem !important;
-            font-size: 0.8rem !important;
-            border-radius: 6px !important;
-            margin-right: 0.5rem !important;
-          }
+/* Remove extra styling from FullCalendar wrappers */
+.fc-daygrid-event {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
 
-          .fc .fc-button:last-child {
-            margin-right: 0 !important;
-          }
+/* === Toolbar Styling === */
+.fc .fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
 
-          .fc .fc-button:hover {
-            background: #1f1f1f !important;
-          }
+/* Title aligned to left */
+.fc .fc-toolbar-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: left;
+  flex-grow: 1;
+}
 
-          /* Add gap between prev and next buttons */
-          .fc .fc-prev-button {
-            margin-right: 0.4rem !important;
-          }
+/* Buttons grouped on right */
+.fc .fc-button {
+  background: black !important;
+  border: none !important;
+  color: white !important;
+  padding: 0.25rem 0.6rem !important;
+  font-size: 0.8rem !important;
+  border-radius: 6px !important;
+  margin-left: 0.4rem !important;
+}
 
-          @media (max-width: 640px) {
-            .fc .fc-toolbar-title {
-              font-size: 0.9rem !important;
-            }
+.fc .fc-button:hover {
+  background: #1f1f1f !important;
+}
 
-            .fc .fc-button {
-              padding: 0.2rem 0.45rem !important;
-              font-size: 0.7rem !important;
-            }
-          }
+/* === Animation === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* === Day Frame Fixes === */
+.fc-daygrid-day-frame {
+  position: relative;
+  overflow: hidden;
+  padding: 4px !important;
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 640px) {
+  .fc .fc-toolbar-title {
+    font-size: 0.9rem !important;
+  }
+
+  .fc .fc-button {
+    padding: 0.2rem 0.45rem !important;
+    font-size: 0.7rem !important;
+  }
+
+  .fc-event {
+    font-size: 0.6rem !important;
+    height: 25px !important;
+    padding: 0 !important;
+  }
+
+  .fc-daygrid-day-frame {
+    padding: 2px !important;
+  }
+
+  .fc-daygrid-day-top {
+    margin-bottom: 1px !important;
+  }
+}
+
         `}
       </style>
 
