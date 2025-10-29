@@ -17,7 +17,7 @@ export default function History() {
           return;
         }
 
-        const res = await fetch("http://pennywise-gray-iota.vercel.app/api/expenses", {
+        const res = await fetch("http://pennywise-tan.vercel.app/api/expenses", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -48,7 +48,7 @@ export default function History() {
     if (!token) return toast.error("Unauthorized");
 
     try {
-      const res = await fetch(`http://pennywise-gray-iota.vercel.app/api/expenses/${id}`, {
+      const res = await fetch(`http://pennywise-tan.vercel.app/api/expenses/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

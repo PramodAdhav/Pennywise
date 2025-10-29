@@ -14,7 +14,7 @@ export default function Track() {
 
   const fetchExpenses = async () => {
     try {
-      const res = await fetch("http://pennywise-gray-iota.vercel.app/api/expenses", {
+      const res = await fetch("http://pennywise-tan.vercel.app/api/expenses", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -47,7 +47,7 @@ export default function Track() {
     }
 
     try {
-      const res = await fetch("http://pennywise-gray-iota.vercel.app/api/expenses", {
+      const res = await fetch("http://pennywise-tan.vercel.app/api/expenses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

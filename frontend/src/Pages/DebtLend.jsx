@@ -19,7 +19,7 @@ export default function DebtLend() {
         const token = localStorage.getItem("token");
         if (!token) return toast.error("Please login again.");
 
-        const res = await fetch("http://pennywise-gray-iota.vercel.app/api/debtlend", {
+        const res = await fetch("http://pennywise-tan.vercel.app/api/debtlend", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -50,7 +50,7 @@ export default function DebtLend() {
       const token = localStorage.getItem("token");
       if (!token) return toast.error("Unauthorized.");
 
-      const res = await fetch("http://pennywise-gray-iota.vercel.app/api/debtlend", {
+      const res = await fetch("http://pennywise-tan.vercel.app/api/debtlend", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +85,7 @@ export default function DebtLend() {
       const token = localStorage.getItem("token");
       if (!token) return toast.error("Unauthorized");
 
-      const res = await fetch(`http://pennywise-gray-iota.vercel.app/api/debtlend/${id}/status`, {
+      const res = await fetch(`http://pennywise-tan.vercel.app/api/debtlend/${id}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@ export default function DebtLend() {
       const token = localStorage.getItem("token");
       if (!token) return toast.error("Unauthorized.");
 
-      const res = await fetch(`http://pennywise-gray-iota.vercel.app/api/debtlend/${id}`, {
+      const res = await fetch(`http://pennywise-tan.vercel.app/api/debtlend/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
