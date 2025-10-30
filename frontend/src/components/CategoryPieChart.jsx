@@ -1,4 +1,3 @@
-// components/CategoryPieChart.jsx
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -6,11 +5,11 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function CategoryPieChart({ data }) {
   const chartData = {
-    labels: Object.keys(data), // category names
+    labels: Object.keys(data),
     datasets: [
       {
         label: "Spending by Category",
-        data: Object.values(data), // amounts
+        data: Object.values(data),
         backgroundColor: [
           "#4E79A7",
           "#F28E2B",

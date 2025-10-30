@@ -1,6 +1,5 @@
-// components/TopExpensesTable.jsx
+
 export default function TopExpensesTable({ expenses }) {
-  // Sort by amount descending and take top 10
   const topExpenses = [...expenses]
     .sort((a, b) => parseInt(b.amount) - parseInt(a.amount))
     .slice(0, 10);

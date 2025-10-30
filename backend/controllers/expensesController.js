@@ -65,7 +65,6 @@ export const getExpenses = async (req, res) => {
       orderBy: { date: "desc" },
     });
 
-    // Always respond successfully, even if there are no expenses
     return res.status(200).json(expenses);
   } catch (err) {
     console.error("Error fetching expenses:", err.message);

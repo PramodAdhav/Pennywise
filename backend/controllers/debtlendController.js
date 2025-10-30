@@ -1,7 +1,7 @@
 import prisma from "../prismaClient.js";
 import jwt from "jsonwebtoken";
 
-// Helper: verify JWT and get userId
+// verify JWT and get userId
 function getUserIdFromToken(req) {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) throw new Error("Unauthorized: no token");

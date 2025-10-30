@@ -32,7 +32,7 @@ function App() {
   );
 }
 
-// ✅ Layout wrapper that includes Navbar and nested protected pages
+
 function LayoutWithNavbar() {
   return (
     <>
@@ -44,7 +44,7 @@ function LayoutWithNavbar() {
           <Route path="history" element={<History />} />
           <Route path="insights" element={<Insights />} />
           <Route path="calendar" element={<Calendar />} />
-          <Route path="debt-lend" element={<DebtLend />} /> {/* ✅ Added route */}
+          <Route path="debt-lend" element={<DebtLend />} />
           {/* Redirect any unknown protected route to /home */}
           <Route path="*" element={<Navigate to="home" />} />
         </Routes>

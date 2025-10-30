@@ -13,7 +13,7 @@ export default defineConfig({
   build: {
     outDir: "dist",
   },
-  // 👇 This is key
+
   server: {
     historyApiFallback: true,
   },

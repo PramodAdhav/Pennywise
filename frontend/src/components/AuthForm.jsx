@@ -15,17 +15,17 @@ export default function AuthForm() {
 
   const navigate = useNavigate();
 
-  // ✅ Name validation
+
   const handleNameChange = (e) => {
     const val = e.target.value;
     if (/^[A-Za-z\s]*$/.test(val)) setSignupUsername(val);
   };
 
-  // ✅ Password validation
+
   const isValidPassword = (pass) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^])[A-Za-z\d@$!%*?&#^]{8,}$/.test(pass);
 
-  // --- LOGIN ---
+  //  LOGIN 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -47,7 +47,7 @@ export default function AuthForm() {
     }
   };
 
-  // --- SIGNUP ---
+  //  SIGNUP 
   const handleSignup = async (e) => {
     e.preventDefault();
 
@@ -83,7 +83,6 @@ export default function AuthForm() {
 
   return (
     <div className="w-full max-w-sm sm:max-w-md p-6 sm:p-8 bg-white rounded-2xl shadow-lg relative overflow-hidden text-black border border-gray-300">
-      {/* Tabs */}
       <div className="flex justify-around mb-6 sm:mb-8 relative z-10">
         <button
           className={`pb-2 text-base sm:text-lg ${
@@ -103,7 +102,6 @@ export default function AuthForm() {
         </button>
       </div>
 
-      {/* Forms */}
       <div className="relative">
         {/* LOGIN FORM */}
         <form

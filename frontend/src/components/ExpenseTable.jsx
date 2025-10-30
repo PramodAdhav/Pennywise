@@ -6,7 +6,7 @@ export default function ExpenseTable({ expenses, onDelete }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
-  // Search logic
+  // Search
   const filteredExpenses = expenses.filter((item) => {
     const term = search.toLowerCase();
     return (
@@ -52,7 +52,6 @@ export default function ExpenseTable({ expenses, onDelete }) {
 
   return (
     <div className="p-6">
-      {/* Search box */}
       <div className="flex justify-center mb-6">
         <input
           type="text"

@@ -27,7 +27,7 @@ export default function LineChart({ data }) {
   maintainAspectRatio: false,
   scales: {
     x: {
-      grid: { drawTicks: true, drawBorder: true, display: false }, // hides grid lines
+      grid: { drawTicks: true, drawBorder: true, display: false },
       ticks: {
         color: "#333",
         maxRotation: 45,
@@ -35,7 +35,7 @@ export default function LineChart({ data }) {
       },
     },
     y: {
-      grid: { drawTicks: true, drawBorder: true, display: false }, // hides grid lines
+      grid: { drawTicks: true, drawBorder: true, display: false },
       ticks: { color: "#333" },
     },
   },

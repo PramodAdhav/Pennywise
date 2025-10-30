@@ -16,6 +16,8 @@ const PORT = process.env.PORT || 5000;
 
 // CORS
 app.use(cors());
+
+
 // Middleware
 
 app.use(express.json());
@@ -31,6 +33,5 @@ app.use("/api/debtlend", debtLendRoutes);
 if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
-// Start
 
 export default app;

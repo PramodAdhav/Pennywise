@@ -105,7 +105,6 @@ export default function Calendar() {
 
       </div>
 
-      {/* Custom CSS for toolbar styling */}
       <style>
         {`
           /* === Calendar Day Styling === */

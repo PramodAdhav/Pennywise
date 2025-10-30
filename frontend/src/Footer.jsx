@@ -4,7 +4,6 @@ export default function FooterCard() {
   return (
     <footer className="w-full bg-[#d1cfc0] text-white py-3 sm:py-4 mt-auto">
       <div className="max-w-6xl mx-auto flex flex-col items-center space-y-3 px-4 sm:px-6">
-        {/* Center Section - Name & Links */}
         <div className="flex flex-col items-center space-y-2 text-center">
           <p className="text-base sm:text-lg text-black font-bold">
             Made with <span className="text-red-500">♥</span>{" "}

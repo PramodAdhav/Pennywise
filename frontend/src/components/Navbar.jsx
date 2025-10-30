@@ -14,7 +14,6 @@ export default function Navbar() {
   return (
     <header className="w-full bg-[#d1cfc0] text-white">
       <div className="relative flex items-center justify-between px-4 sm:px-6 md:px-8 py-6 md:py-10">
-        {/* Title */}
         <h1 className="instrument-serif-regular text-3xl sm:text-4xl px-2 font-bold text-black">
           Pennywise
         </h1>
@@ -76,7 +75,6 @@ export default function Navbar() {
           </NavLink>
         </nav>
 
-        {/* Mobile Menu Button */}
         <button
           className="md:hidden text-black"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -84,7 +82,6 @@ export default function Navbar() {
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
 
-        {/* Logout Button */}
         <button
           onClick={handleLogout}
           className="hidden md:block bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg"
