@@ -3,7 +3,11 @@ import { Button } from "../components/ui/TrackButton";
 import { toast } from "sonner";
 
 export default function Track() {
-  const [date, setDate] = useState("");
+  const todayIST = new Date().toLocaleString("en-CA", {
+    timeZone: "Asia/Kolkata",
+  }).split(",")[0];
+
+  const [date, setDate] = useState(todayIST);
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
@@ -40,6 +44,16 @@ export default function Track() {
       return;
     }
 
+    const selectedDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate > today) {
+      toast.error("Future dates are not allowed");
+      return;
+    }
+
     const numAmount = Number(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
       toast.error("Please enter a valid positive number for amount");
@@ -64,7 +78,7 @@ export default function Track() {
       const data = await res.json();
       if (res.ok) {
         toast.success("Expense added successfully!");
-        setDate("");
+        setDate(todayIST); // reset to today
         setAmount("");
         setCategory("");
         setNote("");
@@ -88,7 +102,7 @@ export default function Track() {
     <div className="bg-[#d1cfc0] min-h-screen text-black flex flex-col -mt-8 sm:-mt-10 items-center py-6 px-3 sm:px-6">
       {/* Add Expense Card */}
       <div className="bg-[#1f1f1f] text-white p-5 sm:p-8 shadow-lg w-full sm:w-[80%] mb-4 rounded">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">         
           <input
             type="date"
             value={date}
@@ -131,7 +145,6 @@ export default function Track() {
         </div>
       </div>
 
-      {/* Add Expense Button */}
       <div className="mb-8 sm:mb-10">
         <Button
           onClick={handleSubmit}
@@ -141,7 +154,6 @@ export default function Track() {
         </Button>
       </div>
 
-      {/* Recent Expenses */}
       <div className="bg-[#d1cfc0] p-4 sm:p-6 w-full sm:w-[80%] mt-4 sm:mt-6 overflow-x-auto">
         <h2 className="text-2xl sm:text-3xl font-semibold mb-4 sm:mb-6 text-left">
           Recent Expenses
