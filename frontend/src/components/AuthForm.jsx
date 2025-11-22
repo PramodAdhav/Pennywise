@@ -86,7 +86,7 @@ export default function AuthForm() {
       <div className="flex justify-around mb-6 sm:mb-8 relative z-10">
         <button
           className={`pb-2 text-base sm:text-lg ${
-            isLogin ? "border-b-2 border-blue-600 font-semibold" : ""
+            isLogin ? "border-b-2 border-blue-600 font-semibold " : ""
           } text-black`}
           onClick={() => setIsLogin(true)}
         >
@@ -117,7 +117,7 @@ export default function AuthForm() {
             type="email"
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
-            className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-black text-sm sm:text-base"
+            className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-grey-400 text-black text-sm sm:text-base"
             required
           />
           <div className="relative">
@@ -126,7 +126,7 @@ export default function AuthForm() {
               type={showLoginPassword ? "text" : "password"}
               value={loginPassword}
               onChange={(e) => setLoginPassword(e.target.value)}
-              className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full pr-10 text-black text-sm sm:text-base"
+              className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-grey-400 w-full pr-10 text-black text-sm sm:text-base"
               required
             />
             <button
@@ -137,7 +137,7 @@ export default function AuthForm() {
               {showLoginPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          <button className="bg-[#1f1f1f] text-white p-2.5 sm:p-3 rounded-lg font-semibold hover:bg-blue-700 transition text-sm sm:text-base">
+          <button className="bg-[#1f1f1f] text-white p-2.5 sm:p-3 rounded-lg font-semibold hover:bg-[#023020] hover:cursor-pointer transition text-sm sm:text-base">
             Login
           </button>
         </form>
@@ -155,7 +155,7 @@ export default function AuthForm() {
             placeholder="Full Name"
             value={signupUsername}
             onChange={handleNameChange}
-            className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-black text-sm sm:text-base"
+            className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-grey-400 text-black text-sm sm:text-base"
             required
           />
           <input
@@ -163,7 +163,7 @@ export default function AuthForm() {
             type="email"
             value={signupEmail}
             onChange={(e) => setSignupEmail(e.target.value)}
-            className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-black text-sm sm:text-base"
+            className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-grey-400 text-black text-sm sm:text-base"
             required
           />
           <div className="relative">
@@ -172,7 +172,7 @@ export default function AuthForm() {
               type={showSignupPassword ? "text" : "password"}
               value={signupPassword}
               onChange={(e) => setSignupPassword(e.target.value)}
-              className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full pr-10 text-black text-sm sm:text-base"
+              className="border p-2.5 sm:p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-grey-400 w-full pr-10 text-black text-sm sm:text-base"
               required
             />
             <button
@@ -188,7 +188,7 @@ export default function AuthForm() {
             Must contain uppercase, lowercase, number, and a symbol.
           </p>
 
-          <button className="bg-[#1f1f1f] text-white p-2.5 sm:p-3 rounded-lg font-semibold hover:bg-blue-700 transition text-sm sm:text-base">
+          <button className="bg-[#1f1f1f] text-white p-2.5 sm:p-3 rounded-lg font-semibold hover:bg-[#023020] hover:cursor-pointer transition text-sm sm:text-base">
             Signup
           </button>
         </form>
