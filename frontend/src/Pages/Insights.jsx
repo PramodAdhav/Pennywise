@@ -74,7 +74,7 @@ export default function Insights() {
     { amount: 0, category: "" }
   );
 
-  const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
+  const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0).toFixed(2);
   const totalEntries = expenses.length;
   const avgSpending = Math.floor(totalExpenses / totalEntries);
 
