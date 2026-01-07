@@ -261,7 +261,7 @@ export default function DebtLend() {
         <div className="text-center mt-5 sm:mt-6">
           <button
             onClick={handleAdd}
-            className="px-5 sm:px-6 py-2 bg白 text-black rounded-full hover:bg-white hover:cursor-pointer transition-all text-sm sm:text-base"
+            className="px-5 sm:px-6 py-2 bg白 text-black rounded-full bg-white hover:cursor-pointer transition-all text-sm sm:text-base"
           >
             Add Record
           </button>
