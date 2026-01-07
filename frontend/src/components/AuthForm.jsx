@@ -15,17 +15,15 @@ export default function AuthForm() {
 
   const navigate = useNavigate();
 
-
   const handleNameChange = (e) => {
     const val = e.target.value;
     if (/^[A-Za-z\s]*$/.test(val)) setSignupUsername(val);
   };
 
-
   const isValidPassword = (pass) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^])[A-Za-z\d@$!%*?&#^]{8,}$/.test(pass);
 
-  //  LOGIN 
+  // LOGIN 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -47,7 +45,7 @@ export default function AuthForm() {
     }
   };
 
-  //  SIGNUP 
+  // SIGNUP 
   const handleSignup = async (e) => {
     e.preventDefault();
 
@@ -70,8 +68,14 @@ export default function AuthForm() {
       });
       const data = await res.json();
       if (res.ok) {
+        // Store token but switch to Login tab instead of redirecting
         localStorage.setItem("token", data.token);
-        navigate("/home");
+        toast.success("Account created successfully! Please log in.");
+        setIsLogin(true); // Switch to login tab
+        // Clear signup fields for clean UX
+        setSignupUsername("");
+        setSignupEmail("");
+        setSignupPassword("");
       } else {
         toast.error(data.message || "Signup failed");
       }
