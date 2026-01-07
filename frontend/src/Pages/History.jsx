@@ -7,33 +7,59 @@ import autoTable from "jspdf-autotable";
 export default function History() {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(false);
 
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
+          setAuthError(true);
           toast.error("You must be logged in to view expenses.");
           return;
         }
 
-        const res = await fetch("https://pennywise-tan.vercel.app/api/expenses", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch(
+          "https://pennywise-tan.vercel.app/api/expenses",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Explicitly handle invalid/expired token
+        if (res.status === 401 || res.status === 403) {
+          setAuthError(true);
+          let data;
+          try {
+            data = await res.json();
+          } catch {
+            data = {};
+          }
+          toast.error(
+            data.message ||
+              data.error ||
+              "Your session has expired. Please log in again."
+          );
+          return;
+        }
 
         const data = await res.json();
 
         if (res.ok) {
-          const sortedData = data.sort(
+          const sortedData = (data || []).sort(
             (a, b) => new Date(b.created_at) - new Date(a.created_at)
           );
           setExpenses(sortedData);
         } else {
-          toast.error(`Failed to load expenses: ${data.message || data.error}`);
+          // For other server errors, log and show a generic error
+          console.error("Failed to load expenses:", data);
+          // toast.error(
+          //   data.message || data.error || "Failed to load expenses."
+          // );
         }
       } catch (err) {
         console.error("Error fetching expenses:", err);
-        toast.error(`Error fetching expenses: ${err.message}`);
+        toast.error("Error fetching expenses.");
       } finally {
         setLoading(false);
       }
@@ -48,14 +74,24 @@ export default function History() {
     if (!token) return toast.error("Unauthorized");
 
     try {
-      const res = await fetch(`https://pennywise-tan.vercel.app/api/expenses/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `https://pennywise-tan.vercel.app/api/expenses/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await res.json();
       if (res.ok) {
         setExpenses((prev) => prev.filter((exp) => exp.id !== id));
         toast.success(data.message || "Expense deleted successfully");
+      } else if (res.status === 401 || res.status === 403) {
+        setAuthError(true);
+        toast.error(
+          data.message ||
+            data.error ||
+            "Your session has expired. Please log in again."
+        );
       } else {
         toast.error(data.message || "Failed to delete expense");
       }
@@ -90,7 +126,11 @@ export default function History() {
       // Subtitle
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
-      doc.text(`List of expenses dated from ${startDate} to ${endDate}.`, 14, 32);
+      doc.text(
+        `List of expenses dated from ${startDate} to ${endDate}.`,
+        14,
+        32
+      );
 
       // Prepare table data
       const tableData = expenses.map((e, i) => [
@@ -125,6 +165,13 @@ export default function History() {
       </div>
     );
 
+  if (authError)
+    return (
+      <div className="bg-[#d1cfc0] min-h-screen flex justify-center items-center text-black text-lg sm:text-2xl text-center px-4">
+        Please log in again to view your expenses.
+      </div>
+    );
+
   return (
     <div className="bg-[#d1cfc0] min-h-screen text-black pt-0 px-4 sm:px-10 text-left -mt-6 sm:-mt-8">
       <div className="px-2 sm:px-8 mt-2">
@@ -135,9 +182,16 @@ export default function History() {
         </blockquote>
       </div>
 
-      {/* Expense Table */}
+      {/* Expense Table / Empty State */}
       <div className="overflow-x-auto mt-4">
-        <ExpenseTable expenses={expenses} onDelete={handleDelete} />
+        {expenses.length === 0 ? (
+          <div className="text-center text-sm sm:text-base text-black py-6">
+            You have not added any expenses yet. Start by adding your first
+            expense to see it here.
+          </div>
+        ) : (
+          <ExpenseTable expenses={expenses} onDelete={handleDelete} />
+        )}
       </div>
 
       {/* Export Button */}

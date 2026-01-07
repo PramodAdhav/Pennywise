@@ -5,6 +5,7 @@ import { CheckCircle, Trash2 } from "lucide-react";
 export default function DebtLend() {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(false);
   const [form, setForm] = useState({
     personOfInterest: "",
     date: "",
@@ -17,15 +18,46 @@ export default function DebtLend() {
     const fetchRecords = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) return toast.error("Please login again.");
+        if (!token) {
+          setAuthError(true);
+          toast.error("Please login again.");
+          return;
+        }
 
         const res = await fetch("https://pennywise-tan.vercel.app/api/debtlend", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await res.json();
 
-        if (res.ok) setRecords(data);
-        else toast.error(data.message || "Failed to load Debt/Lend data");
+        if (res.status === 401 || res.status === 403) {
+          setAuthError(true);
+          let data;
+          try {
+            data = await res.json();
+          } catch {
+            data = {};
+          }
+          toast.error(
+            data.message ||
+              data.error ||
+              "Your session has expired. Please log in again."
+          );
+          return;
+        }
+
+        let data;
+        try {
+          data = await res.json();
+        } catch (e) {
+          console.error("Failed to parse Debt/Lend JSON:", e);
+          data = [];
+        }
+
+        if (res.ok) {
+          setRecords(Array.isArray(data) ? data : []);
+        } else {
+          console.error("Failed to load Debt/Lend data:", data);
+          toast.error(data.message || data.error || "Failed to load Debt/Lend data");
+        }
       } catch (err) {
         console.error(err);
         toast.error("Failed to load Debt/Lend data");
@@ -71,6 +103,13 @@ export default function DebtLend() {
           note: "",
           type: "Debt",
         });
+      } else if (res.status === 401 || res.status === 403) {
+        setAuthError(true);
+        toast.error(
+          data.message ||
+            data.error ||
+            "Your session has expired. Please log in again."
+        );
       } else {
         toast.error(data.message || "Failed to add record");
       }
@@ -85,20 +124,26 @@ export default function DebtLend() {
       const token = localStorage.getItem("token");
       if (!token) return toast.error("Unauthorized");
 
-      const res = await fetch(`https://pennywise-tan.vercel.app/api/debtlend/${id}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status }),
-      });
+      const res = await fetch(
+        `https://pennywise-tan.vercel.app/api/debtlend/${id}/status`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status }),
+        }
+      );
 
       if (res.ok) {
         setRecords((prev) =>
           prev.map((r) => (r.id === id ? { ...r, status } : r))
         );
         toast.success("Status updated!");
+      } else if (res.status === 401 || res.status === 403) {
+        setAuthError(true);
+        toast.error("Your session has expired. Please log in again.");
       } else {
         toast.error("Failed to update status");
       }
@@ -123,6 +168,9 @@ export default function DebtLend() {
       if (res.ok) {
         setRecords((prev) => prev.filter((r) => r.id !== id));
         toast.success("Record deleted successfully!");
+      } else if (res.status === 401 || res.status === 403) {
+        setAuthError(true);
+        toast.error("Your session has expired. Please log in again.");
       } else {
         toast.error("Failed to delete record");
       }
@@ -139,6 +187,24 @@ export default function DebtLend() {
     return (
       <div className="bg-[#d1cfc0] min-h-screen flex justify-center items-center text-black text-xl sm:text-2xl text-center px-4">
         Loading your records...
+      </div>
+    );
+
+  if (authError)
+    return (
+      <div className="bg-[#d1cfc0] min-h-screen flex flex-col justify-center items-center text-black px-6 text-center">
+        <div className="shadow-md border border-black rounded-2xl p-8 sm:p-10 max-w-md">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-2">Session Required</h2>
+          <p className="text-gray-700 text-sm sm:text-base">
+            Please log in again to view and manage your Debt/Lend records.
+          </p>
+          <button
+            onClick={() => (window.location.href = "/login")}
+            className="mt-6 px-6 py-2 bg-black text-white rounded-full font-medium hover:cursor-pointer transition"
+          >
+            Go to Login
+          </button>
+        </div>
       </div>
     );
 
@@ -195,7 +261,7 @@ export default function DebtLend() {
         <div className="text-center mt-5 sm:mt-6">
           <button
             onClick={handleAdd}
-            className="px-5 sm:px-6 py-2 bg-white text-black rounded-full hover:bg-white hover:cursor-pointer transition-all text-sm sm:text-base"
+            className="px-5 sm:px-6 py-2 bg白 text-black rounded-full hover:bg-white hover:cursor-pointer transition-all text-sm sm:text-base"
           >
             Add Record
           </button>

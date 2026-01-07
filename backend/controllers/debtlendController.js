@@ -2,17 +2,26 @@ import prisma from "../prismaClient.js";
 import jwt from "jsonwebtoken";
 
 // verify JWT and get userId
-function getUserIdFromToken(req) {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) throw new Error("Unauthorized: no token");
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  return decoded.id;
+function getUserIdFromToken(req, res) {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized: no token" });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded.id;
+  } catch (err) {
+    console.error("Invalid or expired token:", err.message);
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
 }
 
 // POST /api/debtlend
 export const addDebtLend = async (req, res) => {
   try {
-    const userId = getUserIdFromToken(req);
+    const userId = await getUserIdFromToken(req, res);
+    if (!userId) return; 
+
     const { personOfInterest, date, amount, note, type } = req.body;
 
     if (!personOfInterest || !date || !amount || !type)
@@ -43,14 +52,15 @@ export const addDebtLend = async (req, res) => {
 // GET /api/debtlend
 export const getDebtLend = async (req, res) => {
   try {
-    const userId = getUserIdFromToken(req);
+    const userId = await getUserIdFromToken(req, res);
+    if (!userId) return; 
 
     const records = await prisma.debtLend.findMany({
       where: { userId },
       orderBy: { date: "desc" },
     });
 
-    res.json(records);
+    res.json(records); 
   } catch (err) {
     console.error("Fetch Debt/Lend failed:", err);
     res.status(500).json({ message: "Failed to get Debt/Lend records" });
@@ -60,7 +70,9 @@ export const getDebtLend = async (req, res) => {
 // DELETE /api/debtlend/:id
 export const deleteDebtLend = async (req, res) => {
   try {
-    const userId = getUserIdFromToken(req);
+    const userId = await getUserIdFromToken(req, res);
+    if (!userId) return;
+
     const id = parseInt(req.params.id);
 
     const record = await prisma.debtLend.findUnique({ where: { id } });
@@ -76,11 +88,12 @@ export const deleteDebtLend = async (req, res) => {
   }
 };
 
-
 // PATCH /api/debtlend/:id/status
 export const updateDebtLendStatus = async (req, res) => {
   try {
-    const userId = getUserIdFromToken(req);
+    const userId = await getUserIdFromToken(req, res);
+    if (!userId) return;
+
     const id = parseInt(req.params.id);
     const { status } = req.body;
 

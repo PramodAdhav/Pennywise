@@ -84,7 +84,7 @@ export default function Navbar() {
 
         <button
           onClick={handleLogout}
-          className="hidden md:block bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg"
+          className="hidden md:block bg-red-500 hover:bg-red-600 hover:cursor-pointer text-white font-bold py-2 px-4 rounded-lg"
         >
           Logout
         </button>
@@ -116,7 +116,7 @@ export default function Navbar() {
               setMenuOpen(false);
               handleLogout();
             }}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg"
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 hover:cursor-pointer px-6 rounded-lg"
           >
             Logout
           </button>

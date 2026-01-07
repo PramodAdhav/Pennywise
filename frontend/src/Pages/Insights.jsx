@@ -6,6 +6,7 @@ import TopExpensesTable from "../components/TopExpensesTable";
 export default function Insights() {
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
@@ -15,21 +16,40 @@ export default function Insights() {
     const fetchExpenses = async () => {
       try {
         const token = localStorage.getItem("token");
-        if (!token) return alert("You must be logged in to view insights.");
+        if (!token) {
+          setAuthError(true);
+          return;
+        }
 
         const res = await fetch("https://pennywise-tan.vercel.app/api/expenses", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const data = await res.json();
-        if (res.ok) setExpenses(data);
-        else alert(`Failed to load insights: ${data.message || data.error}`);
+
+        if (res.status === 401 || res.status === 403) {
+          setAuthError(true);
+          return;
+        }
+
+        let data;
+        try {
+          data = await res.json();
+        } catch (e) {
+          console.error("Failed to parse insights JSON:", e);
+          data = [];
+        }
+
+        if (res.ok) {
+          setExpenses(Array.isArray(data) ? data : []);
+        } else {
+          console.error("Failed to load insights:", data);
+        }
       } catch (err) {
-        console.error(err);
-        alert("Error fetching insights");
+        console.error("Error fetching insights:", err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchExpenses();
   }, []);
 
@@ -37,6 +57,24 @@ export default function Insights() {
     return (
       <div className="min-h-screen bg-[#d1cfc0] flex justify-center items-center text-gray-600 text-lg">
         Loading insights...
+      </div>
+    );
+
+  if (authError)
+    return (
+      <div className="min-h-screen bg-[#d1cfc0] flex flex-col justify-center items-center text-gray-800 px-6 text-center">
+        <div className="shadow-md border border-black rounded-2xl p-8 sm:p-10 max-w-md">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-2">Session Required</h2>
+          <p className="text-gray-600 text-sm sm:text-base">
+            Please log in again to view your spending insights.
+          </p>
+          <button
+            onClick={() => (window.location.href = "/login")}
+            className="mt-6 px-6 py-2 bg-black text-white rounded-full font-medium hover:cursor-pointer transition"
+          >
+            Go to Login
+          </button>
+        </div>
       </div>
     );
 
@@ -66,7 +104,7 @@ export default function Insights() {
   });
 
   const daysInMonth = new Date(year, month, 0).getDate();
-  const monthlyTotal = monthlyExpenses.reduce((s, e) => s + e.amount, 0);
+  const monthlyTotal = monthlyExpenses.reduce((s, e) => s + e.amount, 0).toFixed(2);
   const monthlyEntries = monthlyExpenses.length;
   const avgPerDay = Math.floor(monthlyTotal / daysInMonth || 0);
   const highestExpense = monthlyExpenses.reduce(
@@ -76,13 +114,14 @@ export default function Insights() {
 
   const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0).toFixed(2);
   const totalEntries = expenses.length;
-  const avgSpending = Math.floor(totalExpenses / totalEntries);
+  const avgSpending = totalEntries > 0 ? Math.floor(totalExpenses / totalEntries) : 0;
 
   const freqCategoryMap = {};
   expenses.forEach((e) => {
     freqCategoryMap[e.category] = (freqCategoryMap[e.category] || 0) + 1;
   });
-  const mostFreqCategory = Object.entries(freqCategoryMap).sort((a, b) => b[1] - a[1])[0][0];
+  const mostFreqCategory =
+    Object.entries(freqCategoryMap).sort((a, b) => b[1] - a[1])[0]?.[0] || "-";
 
   const labels = Array.from({ length: daysInMonth }, (_, i) => {
     const day = String(i + 1).padStart(2, "0");
