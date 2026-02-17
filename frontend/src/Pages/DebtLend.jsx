@@ -192,10 +192,11 @@ export default function DebtLend() {
       <div className="bg-[#1f1f1f] -mt-16 sm:-mt-20 shadow-md rounded-2xl p-4 sm:p-6 max-w-3xl mx-auto mb-8 sm:mb-10 border border-black">
         <h2 className="text-lg text-white font-semibold mb-4">Add New Record</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <input type="text" name="personOfInterest" value={form.personOfInterest} onChange={handleChange} placeholder="Person" className="text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
-          <input type="date" name="date" value={form.date} onChange={handleChange} className="text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
-          <input type="number" name="amount" value={form.amount} onChange={handleChange} placeholder="Amount" className="text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
-          <select name="type" value={form.type} onChange={handleChange} className="text-white bg-[#2b2b2b] rounded-lg p-2 text-sm">
+          {/* Added w-full to all inputs below to ensure equal width on mobile */}
+          <input type="text" name="personOfInterest" value={form.personOfInterest} onChange={handleChange} placeholder="Person" className="w-full text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
+          <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
+          <input type="number" name="amount" value={form.amount} onChange={handleChange} placeholder="Amount" className="w-full text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
+          <select name="type" value={form.type} onChange={handleChange} className="w-full text-white bg-[#2b2b2b] rounded-lg p-2 text-sm">
             <option value="Debt">Debt</option>
             <option value="Lend">Lend</option>
           </select>
