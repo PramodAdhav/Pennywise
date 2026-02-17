@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import LineChart from "../components/LineChart";
 import CategoryPieChart from "../components/CategoryPieChart";
 import TopExpensesTable from "../components/TopExpensesTable";
+import CapybaraLoader from "../components/capybara"; // Import the loader
 
 export default function Insights() {
   const [expenses, setExpenses] = useState([]);
@@ -40,26 +41,31 @@ export default function Insights() {
 
         if (res.ok) {
           setExpenses(Array.isArray(data) ? data : []);
-        } else {
-          console.error("Failed to load insights:", data);
         }
       } catch (err) {
         console.error("Error fetching insights:", err);
       } finally {
-        setLoading(false);
+        // Slight delay for the Capybara to walk a bit!
+        setTimeout(() => setLoading(false), 800);
       }
     };
 
     fetchExpenses();
   }, []);
 
+  // --- Capybara Loading View ---
   if (loading)
     return (
-      <div className="min-h-screen bg-[#d1cfc0] flex justify-center items-center text-gray-600 text-lg">
-        Loading insights...
+      <div className="bg-[#d1cfc0] min-h-[calc(100vh-64px)] flex flex-col justify-center items-center">
+        <div className="-mt-20"> {/* Pulls the capybara up slightly to visually center it */}
+          <CapybaraLoader />
+          <p className="-mt-5 text-black font-medium animate-pulse text-center">
+            {/* You can keep your page-specific text here */}
+            Analysing your spendings...
+          </p>
+        </div>
       </div>
     );
-
   if (authError)
     return (
       <div className="min-h-screen bg-[#d1cfc0] flex flex-col justify-center items-center text-gray-800 px-6 text-center">
@@ -150,10 +156,9 @@ export default function Insights() {
     categoryData[e.category] = (categoryData[e.category] || 0) + e.amount;
   });
 
-  // ----- UI -----
   return (
     <div className="min-h-screen bg-[#d1cfc0] text-neutral-900 p-4 sm:p-8 space-y-10 font-[system-ui] -mt-8">
-      {/* Summary */}
+      {/* Summary Section */}
       <section className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <SummaryCard label="Total Spent" value={`₹${totalExpenses}`} />
         <SummaryCard label="Entries" value={totalEntries} />
@@ -173,14 +178,11 @@ export default function Insights() {
           />
         </div>
 
-        {/* Line Chart */}
         <div className="h-[250px] sm:h-[320px] w-full">
           <LineChart data={chartData} />
         </div>
 
-        {/* Pie + Summary Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          {/* Pie Chart */}
           <div className="h-[260px] sm:h-[320px] flex items-center justify-center">
             {Object.keys(categoryData).length > 0 ? (
               <CategoryPieChart data={categoryData} showLegend={false} />
@@ -191,7 +193,6 @@ export default function Insights() {
             )}
           </div>
 
-          {/* Small Summary Cards */}
           <div className="grid grid-cols-2 gap-4 sm:gap-6">
             <SummaryCard label="Monthly Total" value={`₹${monthlyTotal}`} />
             <SummaryCard label="Entries" value={monthlyEntries} />
@@ -205,13 +206,11 @@ export default function Insights() {
         </div>
       </section>
 
-      {/* Table */}
       <TopExpensesTable expenses={expenses} />
     </div>
   );
 }
 
-// ---- Summary Card Component ----
 function SummaryCard({ label, value, sub }) {
   return (
     <div className="shadow-sm border border-black rounded-2xl py-4 sm:py-6 px-2 sm:px-4 flex flex-col justify-center items-center hover:shadow-md transition-all duration-200 bg-[#dcdacb]">

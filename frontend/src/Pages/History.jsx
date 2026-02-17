@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ExpenseTable from "../components/ExpenseTable";
+import CapybaraLoader from "../components/capybara"; // Importing your new component
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -26,7 +27,6 @@ export default function History() {
           }
         );
 
-        // Explicitly handle invalid/expired token
         if (res.status === 401 || res.status === 403) {
           setAuthError(true);
           let data;
@@ -50,25 +50,19 @@ export default function History() {
             (a, b) => new Date(b.created_at) - new Date(a.created_at)
           );
           setExpenses(sortedData);
-        } else {
-          // For other server errors, log and show a generic error
-          console.error("Failed to load expenses:", data);
-          // toast.error(
-          //   data.message || data.error || "Failed to load expenses."
-          // );
         }
       } catch (err) {
         console.error("Error fetching expenses:", err);
         toast.error("Error fetching expenses.");
       } finally {
-        setLoading(false);
+        // Adding a slight delay so the Capybara can actually be seen!
+        setTimeout(() => setLoading(false), 800);
       }
     };
 
     fetchExpenses();
   }, []);
 
-  // ---- Delete handler ----
   const handleDelete = async (id) => {
     const token = localStorage.getItem("token");
     if (!token) return toast.error("Unauthorized");
@@ -85,13 +79,6 @@ export default function History() {
       if (res.ok) {
         setExpenses((prev) => prev.filter((exp) => exp.id !== id));
         toast.success(data.message || "Expense deleted successfully");
-      } else if (res.status === 401 || res.status === 403) {
-        setAuthError(true);
-        toast.error(
-          data.message ||
-            data.error ||
-            "Your session has expired. Please log in again."
-        );
       } else {
         toast.error(data.message || "Failed to delete expense");
       }
@@ -101,7 +88,6 @@ export default function History() {
     }
   };
 
-  // ---- Export PDF ----
   const handleExportPDF = () => {
     if (expenses.length === 0) {
       toast.error("No expenses to export.");
@@ -110,7 +96,6 @@ export default function History() {
 
     try {
       const doc = new jsPDF();
-
       const startDate = new Date(
         Math.min(...expenses.map((e) => new Date(e.date)))
       ).toLocaleDateString("en-GB");
@@ -118,21 +103,14 @@ export default function History() {
         Math.max(...expenses.map((e) => new Date(e.date)))
       ).toLocaleDateString("en-GB");
 
-      // Title
       doc.setFont("times", "italic");
       doc.setFontSize(28);
       doc.text("Pennywise - History of Expenses", 14, 20);
 
-      // Subtitle
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
-      doc.text(
-        `List of expenses dated from ${startDate} to ${endDate}.`,
-        14,
-        32
-      );
+      doc.text(`List of expenses dated from ${startDate} to ${endDate}.`, 14, 32);
 
-      // Prepare table data
       const tableData = expenses.map((e, i) => [
         i + 1,
         new Date(e.date).toLocaleDateString("en-GB"),
@@ -153,15 +131,21 @@ export default function History() {
       doc.save(`Pennywise_Expenses_${startDate}_to_${endDate}.pdf`);
       toast.success("PDF exported successfully!");
     } catch (err) {
-      console.error("PDF generation failed:", err);
       toast.error("Failed to export PDF.");
     }
   };
 
+  // --- NEW CAPYBARA LOADING STATE ---
   if (loading)
     return (
-      <div className="bg-[#d1cfc0] min-h-screen flex justify-center items-center text-black text-lg sm:text-2xl text-center px-4">
-        Loading your expenses...
+      <div className="bg-[#d1cfc0] min-h-[calc(100vh-64px)] flex flex-col justify-center items-center">
+        <div className="-mt-20"> {/* Pulls the capybara up slightly to visually center it */}
+          <CapybaraLoader />
+          <p className="-mt-5 text-black font-medium animate-pulse text-center">
+            {/* You can keep your page-specific text here */}
+            Loading history...
+          </p>
+        </div>
       </div>
     );
 
@@ -182,7 +166,6 @@ export default function History() {
         </blockquote>
       </div>
 
-      {/* Expense Table / Empty State */}
       <div className="overflow-x-auto mt-4">
         {expenses.length === 0 ? (
           <div className="text-center text-sm sm:text-base text-black py-6">
@@ -194,11 +177,10 @@ export default function History() {
         )}
       </div>
 
-      {/* Export Button */}
       <div className="flex justify-center mt-6 sm:mt-8 pb-10 sm:pb-12">
         <button
           onClick={handleExportPDF}
-          className="px-6 sm:px-8 py-2 sm:py-3 bg-[#1f1f1f] text-white rounded-full font-medium text-sm sm:text-base cursor-default hover:cursor-pointer transition-all"
+          className="px-6 sm:px-8 py-2 sm:py-3 bg-[#1f1f1f] text-white rounded-full font-medium text-sm sm:text-base hover:bg-black transition-all"
         >
           Export as PDF
         </button>
