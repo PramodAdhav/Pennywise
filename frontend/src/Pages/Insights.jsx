@@ -45,7 +45,6 @@ export default function Insights() {
       } catch (err) {
         console.error("Error fetching insights:", err);
       } finally {
-        // Slight delay for the Capybara to walk a bit!
         setTimeout(() => setLoading(false), 800);
       }
     };
@@ -57,15 +56,15 @@ export default function Insights() {
   if (loading)
     return (
       <div className="bg-[#d1cfc0] min-h-[calc(100vh-64px)] flex flex-col justify-center items-center">
-        <div className="-mt-20"> {/* Pulls the capybara up slightly to visually center it */}
+        <div className="-mt-20">
           <CapybaraLoader />
           <p className="-mt-5 text-black font-medium animate-pulse text-center">
-            {/* You can keep your page-specific text here */}
             Analysing your spendings...
           </p>
         </div>
       </div>
     );
+
   if (authError)
     return (
       <div className="min-h-screen bg-[#d1cfc0] flex flex-col justify-center items-center text-gray-800 px-6 text-center">
@@ -129,6 +128,14 @@ export default function Insights() {
   const mostFreqCategory =
     Object.entries(freqCategoryMap).sort((a, b) => b[1] - a[1])[0]?.[0] || "-";
 
+  // Monthly Aggregation for new section
+  const monthlyAggregates = expenses.reduce((acc, e) => {
+    const monthKey = e.date.substring(0, 7);
+    acc[monthKey] = (acc[monthKey] || 0) + e.amount;
+    return acc;
+  }, {});
+  const sortedMonths = Object.entries(monthlyAggregates).sort((a, b) => new Date(b[0]) - new Date(a[0]));
+
   const labels = Array.from({ length: daysInMonth }, (_, i) => {
     const day = String(i + 1).padStart(2, "0");
     return `${year}-${month}-${day}`;
@@ -187,9 +194,7 @@ export default function Insights() {
             {Object.keys(categoryData).length > 0 ? (
               <CategoryPieChart data={categoryData} showLegend={false} />
             ) : (
-              <p className="text-neutral-500 italic text-sm sm:text-base">
-                Add expenses to see pie chart
-              </p>
+              <p className="text-neutral-500 italic text-sm sm:text-base">Add expenses to see pie chart</p>
             )}
           </div>
 
@@ -207,6 +212,50 @@ export default function Insights() {
       </section>
 
       <TopExpensesTable expenses={expenses} />
+
+      {/* New Monthly Breakdown Section */}
+      {/* Monthly Breakdown Section */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8">
+        <div className="border border-black rounded-3xl p-6 bg-[#dcdacb]">
+          <h3 className="text-xl font-semibold mb-4">Monthly Breakdown</h3>
+          {/* This container sets the scrollable area */}
+          <div className="max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+            <table className="w-full text-left border-collapse">
+              <thead className="sticky top-0 bg-[#dcdacb]">
+                <tr className="border-b border-black">
+                  <th className="py-2 text-sm">Month</th>
+                  <th className="py-2 text-sm text-right">Total Expenses</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedMonths.map(([month, total]) => {
+                  const date = new Date(month + "-01");
+                  
+                  // Format as Month, YYYY
+                  const monthName = new Intl.DateTimeFormat("en-US", { month: "long" }).format(date);
+                  const yearName = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(date);
+                  const formattedMonth = `${monthName}, ${yearName}`;
+
+                  return (
+                    <tr key={month} className="border-b border-black/10">
+                      <td className="py-3 text-sm">{formattedMonth}</td>
+                      <td className="py-3 text-sm text-right">₹{total.toLocaleString()}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="border border-black rounded-3xl p-6 bg-[#dcdacb] flex flex-col justify-center items-center text-center">
+          <h3 className="text-xl font-semibold mb-2">Savings Trend</h3>
+          <p className="text-neutral-600 text-sm">
+            Visualizing your financial health over time.
+          </p>
+          
+        </div>
+      </section>
     </div>
   );
 }
