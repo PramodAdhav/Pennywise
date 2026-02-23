@@ -168,3 +168,22 @@ body {
   font-weight: 400;
   font-style: italic;
 }
+
+/* Styling for WebKit browsers (Chrome, Safari, Edge) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px; /* Width of the vertical scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #d1cfc0; /* Matches your background */
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #d1cfc0; /* The color of the scrolling handle */
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #333333; /* Slightly lighter on hover */
+}

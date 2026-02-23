@@ -128,13 +128,20 @@ export default function Insights() {
   const mostFreqCategory =
     Object.entries(freqCategoryMap).sort((a, b) => b[1] - a[1])[0]?.[0] || "-";
 
-  // Monthly Aggregation for new section
+  // Monthly Aggregation
   const monthlyAggregates = expenses.reduce((acc, e) => {
     const monthKey = e.date.substring(0, 7);
     acc[monthKey] = (acc[monthKey] || 0) + e.amount;
     return acc;
   }, {});
   const sortedMonths = Object.entries(monthlyAggregates).sort((a, b) => new Date(b[0]) - new Date(a[0]));
+
+  // All-Time Category Aggregation
+  const categoryTotals = expenses.reduce((acc, e) => {
+    acc[e.category] = (acc[e.category] || 0) + e.amount;
+    return acc;
+  }, {});
+  const sortedCategories = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
 
   const labels = Array.from({ length: daysInMonth }, (_, i) => {
     const day = String(i + 1).padStart(2, "0");
@@ -213,29 +220,25 @@ export default function Insights() {
 
       <TopExpensesTable expenses={expenses} />
 
-      {/* New Monthly Breakdown Section */}
-      {/* Monthly Breakdown Section */}
+      {/* Monthly & Category Breakdown Section */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8">
-        <div className="border border-black rounded-3xl p-6 bg-[#dcdacb]">
+        {/* Monthly Breakdown */}
+        <div className="border border-black rounded-3xl p-6 bg-[#d1cfc0]">
           <h3 className="text-xl font-semibold mb-4">Monthly Breakdown</h3>
-          {/* This container sets the scrollable area */}
           <div className="max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
             <table className="w-full text-left border-collapse">
-              <thead className="sticky top-0 bg-[#dcdacb]">
+              <thead className="sticky top-0 bg-[#d1cfc0]">
                 <tr className="border-b border-black">
                   <th className="py-2 text-sm">Month</th>
-                  <th className="py-2 text-sm text-right">Total Expenses</th>
+                  <th className="py-2 text-sm text-right">Total</th>
                 </tr>
               </thead>
               <tbody>
                 {sortedMonths.map(([month, total]) => {
                   const date = new Date(month + "-01");
-                  
-                  // Format as Month, YYYY
                   const monthName = new Intl.DateTimeFormat("en-US", { month: "long" }).format(date);
                   const yearName = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(date);
                   const formattedMonth = `${monthName}, ${yearName}`;
-
                   return (
                     <tr key={month} className="border-b border-black/10">
                       <td className="py-3 text-sm">{formattedMonth}</td>
@@ -248,12 +251,27 @@ export default function Insights() {
           </div>
         </div>
 
-        <div className="border border-black rounded-3xl p-6 bg-[#dcdacb] flex flex-col justify-center items-center text-center">
-          <h3 className="text-xl font-semibold mb-2">Savings Trend</h3>
-          <p className="text-neutral-600 text-sm">
-            Visualizing your financial health over time.
-          </p>
-          
+        {/* All Time Category Breakdown */}
+        <div className="border border-black rounded-3xl p-6 bg-[#d1cfc0]">
+          <h3 className="text-xl font-semibold mb-4">Category Breakdown (All Time)</h3>
+          <div className="max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+            <table className="w-full text-left border-collapse">
+              <thead className="sticky top-0 bg-[#d1cfc0]">
+                <tr className="border-b border-black">
+                  <th className="py-2 text-sm">Category</th>
+                  <th className="py-2 text-sm text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedCategories.map(([category, total]) => (
+                  <tr key={category} className="border-b border-black/10">
+                    <td className="py-3 text-sm capitalize">{category}</td>
+                    <td className="py-3 text-sm text-right">₹{total.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
     </div>

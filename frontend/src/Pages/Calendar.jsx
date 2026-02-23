@@ -151,7 +151,7 @@ export default function Calendar() {
             margin: 0 !important;
           }
 
-          /* Show dash when NO events are present */
+          
           .fc-daygrid-day-events:empty::before {
             content: "-";
             font-size: 2rem;
