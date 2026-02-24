@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { CheckCircle, Trash2 } from "lucide-react";
-import CapybaraLoader from "../components/capybara"; // Import your new loader
+import CapybaraLoader from "../components/capybara";
 
 export default function DebtLend() {
   const [records, setRecords] = useState([]);
@@ -193,7 +193,7 @@ export default function DebtLend() {
         <h2 className="text-lg text-white font-semibold mb-4">Add New Record</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {/* Added w-full to all inputs below to ensure equal width on mobile */}
-          <input type="text" name="personOfInterest" value={form.personOfInterest} onChange={handleChange} placeholder="Person" className="w-full text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
+          <input type="text" name="personOfInterest" value={form.personOfInterest} onChange={handleChange} placeholder="Person of Interest" className="w-full text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
           <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
           <input type="number" name="amount" value={form.amount} onChange={handleChange} placeholder="Amount" className="w-full text-white bg-[#2b2b2b] rounded-lg p-2 text-sm" />
           <select name="type" value={form.type} onChange={handleChange} className="w-full text-white bg-[#2b2b2b] rounded-lg p-2 text-sm">
@@ -203,7 +203,7 @@ export default function DebtLend() {
         </div>
         <textarea name="note" value={form.note} onChange={handleChange} placeholder="Note" className="text-white bg-[#2b2b2b] rounded-lg p-2 text-sm w-full mt-3"></textarea>
         <div className="text-center mt-4">
-          <button onClick={handleAdd} className="px-6 py-2 bg-white text-black rounded-full text-sm">Add Record</button>
+          <button onClick={handleAdd} className="px-6 py-2 bg-white text-black rounded-full text-sm cursor-pointer">Add Record</button>
         </div>
       </div>
 

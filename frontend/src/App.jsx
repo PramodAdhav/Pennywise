@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
 import { Toaster } from "sonner";
 import DebtLend from "./Pages/DebtLend";
+import Biller from "./Pages/Biller";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function LayoutWithNavbar() {
           <Route path="insights" element={<Insights />} />
           <Route path="calendar" element={<Calendar />} />
           <Route path="debt-lend" element={<DebtLend />} />
+          <Route path="biller" element={<Biller />} />
           {/* Redirect any unknown protected route to /home */}
           <Route path="*" element={<Navigate to="home" />} />
         </Routes>

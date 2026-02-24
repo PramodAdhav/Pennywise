@@ -19,7 +19,7 @@ export default function Navbar() {
         </h1>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-8 lg:space-x-12 text-xl lg:text-3xl text-black font-bold instrument-serif-regular">
+        <nav className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-6 lg:space-x-8 text-xl lg:text-3xl text-black font-bold instrument-serif-regular">
           <NavLink
             to="/home"
             className={({ isActive }) =>
@@ -73,6 +73,15 @@ export default function Navbar() {
           >
             Debt/Lend
           </NavLink>
+
+          <NavLink
+            to="/biller"
+            className={({ isActive }) =>
+              isActive ? "font-bold text-black" : "hover:text-black"
+            }
+          >
+            Biller
+          </NavLink>
         </nav>
 
         <button
@@ -93,24 +102,13 @@ export default function Navbar() {
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
         <div className="md:hidden flex flex-col items-center space-y-4 pb-6 text-lg font-semibold text-black bg-[#d1cfc0] border-t border-gray-300">
-          <NavLink to="/home" onClick={() => setMenuOpen(false)}>
-            Home
-          </NavLink>
-          <NavLink to="/track" onClick={() => setMenuOpen(false)}>
-            Track
-          </NavLink>
-          <NavLink to="/history" onClick={() => setMenuOpen(false)}>
-            History
-          </NavLink>
-          <NavLink to="/insights" onClick={() => setMenuOpen(false)}>
-            Insights
-          </NavLink>
-          <NavLink to="/calendar" onClick={() => setMenuOpen(false)}>
-            Calendar
-          </NavLink>
-          <NavLink to="/debt-lend" onClick={() => setMenuOpen(false)}>
-            Debt/Lend
-          </NavLink>
+          <NavLink to="/home" onClick={() => setMenuOpen(false)}>Home</NavLink>
+          <NavLink to="/track" onClick={() => setMenuOpen(false)}>Track</NavLink>
+          <NavLink to="/history" onClick={() => setMenuOpen(false)}>History</NavLink>
+          <NavLink to="/insights" onClick={() => setMenuOpen(false)}>Insights</NavLink>
+          <NavLink to="/calendar" onClick={() => setMenuOpen(false)}>Calendar</NavLink>
+          <NavLink to="/debt-lend" onClick={() => setMenuOpen(false)}>Debt/Lend</NavLink>
+          <NavLink to="/biller" onClick={() => setMenuOpen(false)}>Biller</NavLink>
           <button
             onClick={() => {
               setMenuOpen(false);
@@ -125,3 +123,4 @@ export default function Navbar() {
     </header>
   );
 }
+
