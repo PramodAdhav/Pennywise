@@ -3,7 +3,7 @@ export function calculateSplit(members, dishes) {
 
   for (let dish of dishes) {
     if (dish.sharedBy.length === 0) {
-      throw new Error(`"${dish.name}" has no selected members.`);
+      continue; 
     }
 
     const priceInPaise = Math.round(dish.price * 100);
@@ -15,13 +15,11 @@ export function calculateSplit(members, dishes) {
       totals[index] += shareInPaise;
     });
 
-    const remainder =
-      priceInPaise - shareInPaise * dish.sharedBy.length;
+    const remainder = priceInPaise - (shareInPaise * dish.sharedBy.length);
 
     for (let i = 0; i < remainder; i++) {
       totals[dish.sharedBy[i]] += 1;
     }
   }
-
   return totals.map(amount => amount / 100);
 }
