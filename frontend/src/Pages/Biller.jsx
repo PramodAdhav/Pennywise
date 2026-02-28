@@ -12,15 +12,33 @@ const Biller = () => {
   const [totals, setTotals] = useState([]);
 
   const addMember = () => {
-    if (!nameInput.trim()) return;
+    if (!nameInput.trim()) {
+      return toast.error("Please enter a name.");
+    }
     if (members.length >= 20) return toast.error("Max 20 members.");
+    
     setMembers([...members, nameInput.trim()]);
     setNameInput("");
   };
 
+  const handleNameInputChange = (e) => {
+    const value = e.target.value;
+    if (value === "" || /^[a-zA-Z\s]*$/.test(value)) {
+      setNameInput(value);
+    }
+  };
+
   const addDish = () => {
     const price = parseFloat(dishPrice);
-    if (!dishName.trim() || isNaN(price) || price <= 0) return;
+    
+    if (!dishName.trim()) {
+      return toast.error("Please enter a dish name.");
+    }
+    
+    if (isNaN(price) || price <= 0) {
+      return toast.error("Dishes cant be of values 0 or negative");
+    }
+
     setDishes([...dishes, { name: dishName.trim(), price, sharedBy: [] }]);
     setDishName("");
     setDishPrice("");
@@ -41,7 +59,6 @@ const Biller = () => {
   const toggleAllForDish = (dIdx) => {
     const updated = [...dishes];
     const dish = updated[dIdx];
-    // If everyone is already selected, deselect all. Otherwise, select all.
     if (dish.sharedBy.length === members.length) {
       dish.sharedBy = [];
     } else {
@@ -75,7 +92,7 @@ const Biller = () => {
           <input 
             className="border border-black rounded-md text-black p-2 w-full outline-none focus:ring-0" 
             value={nameInput} 
-            onChange={(e) => setNameInput(e.target.value)} 
+            onChange={handleNameInputChange} 
             placeholder="Enter name" 
           />
           <div className="flex justify-center">
@@ -112,7 +129,7 @@ const Biller = () => {
             {dishes.map((d, i) => (
               <div key={i} className="flex justify-between items-center bg-gray-50 p-2 border border-black rounded">
                 <span className="text-black">{d.name} - ₹{d.price}</span>
-                <button onClick={() => removeDish(i)} className="text-red-600 cursor-pointer font-bold px-2">✕</button>
+                <button onClick={() => removeDish(i)} className="text-red-600 cursor-pointer font-bold px-2 hover:bg-red-100 rounded">✕</button>
               </div>
             ))}
           </div>
@@ -135,7 +152,7 @@ const Biller = () => {
                 <strong className="text-black">{dish.name} (₹{dish.price})</strong>
                 <button 
                   onClick={() => toggleAllForDish(dIdx)} 
-                  className="text-xs bg-gray-800 text-white cursor-pointer px-2 py-1 rounded"
+                  className="text-xs bg-gray-800 text-white cursor-pointer px-2 py-1 rounded hover:bg-gray-700"
                 >
                   {dish.sharedBy.length === members.length ? "Deselect All" : "Select All"}
                 </button>
@@ -145,7 +162,7 @@ const Biller = () => {
                   <div 
                     key={mIdx} 
                     onClick={() => toggleShare(dIdx, mIdx)} 
-                    className={`cursor-pointer w-10 h-10 text-xs font-bold border border-black rounded-full flex items-center justify-center transition-all ${dish.sharedBy.includes(mIdx) ? 'bg-green-500 text-white' : 'bg-gray-200 text-black'}`}
+                    className={`cursor-pointer w-10 h-10 text-xs font-bold border border-black rounded-full flex items-center justify-center transition-all ${dish.sharedBy.includes(mIdx) ? 'bg-green-500 text-white border-green-600' : 'bg-gray-200 text-black'}`}
                   >
                     {member.slice(0, 2).toUpperCase()}
                   </div>
@@ -185,9 +202,9 @@ const Biller = () => {
               })}
             </tbody>
           </table>
-          <p className="text-red-500 text-sm text-center">⚠ Take a screenshot. Data is not saved.</p>
+          <p className="text-red-500 text-sm text-center font-semibold">⚠ Take a screenshot. Data is not saved.</p>
           <div className="flex justify-center">
-            <button className="bg-black text-white font-bold border rounded-md px-6 py-2 cursor-pointer" onClick={resetApp}>
+            <button className="bg-black text-white font-bold border rounded-md px-6 py-2 cursor-pointer hover:bg-gray-800" onClick={resetApp}>
               Start Over
             </button>
           </div>
