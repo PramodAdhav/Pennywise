@@ -12,6 +12,7 @@ export default function Track() {
   const [category, setCategory] = useState("");
   const [note, setNote] = useState("");
   const [expenses, setExpenses] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const token = localStorage.getItem("token");
   if (!token) toast.error("You must be logged in to view expenses.");
@@ -31,6 +32,8 @@ export default function Track() {
       }
     } catch (err) {
       console.error("Error fetching expenses:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -102,7 +105,7 @@ export default function Track() {
     <div className="bg-[#d1cfc0] min-h-screen text-black flex flex-col -mt-8 sm:-mt-10 items-center py-6 px-3 sm:px-6">
       {/* Add Expense Card */}
       <div className="bg-[#1f1f1f] text-white p-5 sm:p-8 shadow-lg w-full sm:w-[80%] mb-4 rounded">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">         
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">        
           <input
             type="date"
             value={date}
@@ -177,32 +180,37 @@ export default function Track() {
               </tr>
             </thead>
             <tbody>
-              {expenses.map((exp) => (
-                <tr
-                  key={exp.id}
-                  className="border border-black hover:bg-gray-200 transition-all"
-                >
-                  <td className="px-3 sm:px-4 py-2 border border-black">
-                    {new Date(exp.date).toLocaleDateString("en-GB")}
-                  </td>
-                  <td className="px-3 sm:px-4 py-2 border border-black">
-                    ₹{exp.amount}
-                  </td>
-                  <td className="px-3 sm:px-4 py-2 border border-black">
-                    {exp.category}
-                  </td>
-                  <td className="px-3 sm:px-4 py-2 border border-black">
-                    {exp.note || "-"}
+              {/* Logic updated to show loading, then data or "No records found" */}
+              {isLoading ? (
+                <tr>
+                  <td colSpan="4" className="text-center py-3 sm:py-4 border border-black">
+                    Loading recent expenses...
                   </td>
                 </tr>
-              ))}
-              {expenses.length === 0 && (
-                <tr>
-                  <td
-                    colSpan="4"
-                    className="text-center py-3 sm:py-4 border border-black"
+              ) : expenses.length > 0 ? (
+                expenses.map((exp) => (
+                  <tr
+                    key={exp.id}
+                    className="border border-black hover:bg-gray-200 transition-all"
                   >
-                    No expenses yet.
+                    <td className="px-3 sm:px-4 py-2 border border-black">
+                      {new Date(exp.date).toLocaleDateString("en-GB")}
+                    </td>
+                    <td className="px-3 sm:px-4 py-2 border border-black">
+                      ₹{exp.amount}
+                    </td>
+                    <td className="px-3 sm:px-4 py-2 border border-black">
+                      {exp.category}
+                    </td>
+                    <td className="px-3 sm:px-4 py-2 border border-black">
+                      {exp.note || "-"}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="text-center py-3 sm:py-4 border border-black">
+                    No records found.
                   </td>
                 </tr>
               )}

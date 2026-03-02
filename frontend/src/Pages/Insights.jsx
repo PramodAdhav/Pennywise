@@ -86,8 +86,8 @@ export default function Insights() {
   if (expenses.length === 0)
     return (
       <div className="min-h-screen bg-[#d1cfc0] flex flex-col justify-center items-center text-gray-800 px-6 text-center">
-        <div className="shadow-md border border-black rounded-2xl p-8 sm:p-10 max-w-md">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-2">No Expenses Found</h2>
+        <div className="shadow-md border border-black rounded-2xl p-8 sm:p-10 max-w-md -mt-120">
+          <h2 className="text-xl sm:text-2xl font-semibold mb-12">No Expenses Found</h2>
           <p className="text-gray-600 text-sm sm:text-base">
             Start tracking expenses to view insights, trends, and breakdowns.
           </p>

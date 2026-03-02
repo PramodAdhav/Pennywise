@@ -180,7 +180,7 @@ export default function History() {
       <div className="flex justify-center mt-6 sm:mt-8 pb-10 sm:pb-12">
         <button
           onClick={handleExportPDF}
-          className="px-6 sm:px-8 py-2 sm:py-3 bg-[#1f1f1f] text-white rounded-full font-medium text-sm sm:text-base hover:bg-black transition-all"
+          className="px-6 sm:px-8 py-2 sm:py-3 bg-[#1f1f1f] text-white rounded-full font-medium text-sm sm:text-base cursor-pointer hover:bg-black transition-all"
         >
           Export as PDF
         </button>
